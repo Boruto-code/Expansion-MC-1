@@ -59,7 +59,7 @@ const skills = {
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
-                *content(event, trigger, player) {
+                content(event, trigger, player) {
                     if (player.countExpansions("fenlie") >= 3){
                         trigger.getParent().directHit.add(trigger.target);
                     }
@@ -84,7 +84,7 @@ const skills = {
                     return event.card.name == "sha";
                 },
                 logTarget: "target",
-                *content(event, trigger, player) {
+                content(event, trigger, player) {
                     "step 0";
                     for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
                         player.discardPlayerCard(trigger.target, "h", true);
