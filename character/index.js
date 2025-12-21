@@ -18,7 +18,7 @@ game.import("character", function() {
         characterFilter: { ...characterFilters },
         characterIntro: { ...characterIntros },
         skill: { ...skills },
-        translate: { ...translates },
+        translate: { ...translates, ...characterSortTranslate },
         pinyins: { ...pinyins }
     };
 });

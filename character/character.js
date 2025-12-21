@@ -5,7 +5,7 @@ const characters = {
     slime: {
         sex: "none",
         group: "qun",
-        hp: "4",
+        hp: 4,
         skills: ["fenlie", "ronghe", "liexi"]
     },
 };

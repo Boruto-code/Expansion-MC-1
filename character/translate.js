@@ -1,5 +1,3 @@
-import { lib, game, ui, get, ai, _status } from "../../../noname.js";
-
 const translates = {
     mc1: "MC-1",
 
@@ -11,6 +9,6 @@ const translates = {
     ronghe_info: "出牌阶段限一次，你可以移去一张“裂”，然后你增加一点体力上限并回复一点体力。",
     liexi: "裂隙",
     liexi_info: "锁定技，你使用【杀】的次数限制为2^X且你的手牌限制始终为4；若你有3张“裂”，你使用的【杀】不可被响应。每轮限一次，你使用【杀】指定目标时，可依次弃置其至多X张手牌，并进行X次判定：每有一次红色，其失去一点体力；每有一次黑色，你弃置其区域里的一张牌（X为“裂”的数量）。"
-}
+};
 
 export default translates;
