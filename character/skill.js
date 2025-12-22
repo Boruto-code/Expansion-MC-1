@@ -262,7 +262,14 @@ const skills = {
         }
     },
     jinxi: {
-        // Pass
+        group: ["jinxi_1", "jinxi_2"],
+        subSkill: {
+            1: {
+                forced: true,
+                frequent: true,
+                
+            }
+        }
     }
 };
 
