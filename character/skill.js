@@ -226,6 +226,18 @@ const skills = {
                 }
             }
         }
+    },
+    bianzhong: {
+        forced: true,
+        frequent: true,
+        trigger: {
+            global: "gameStart"
+        },
+        content(event, trigger, player) {
+            player.judge(function(card) {
+                const suit = get.suit(card);
+            });
+        }
     }
 };
 
