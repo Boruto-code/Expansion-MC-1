@@ -17,7 +17,7 @@ const skills = {
             if (result.bool){
                 await player.addToExpansion(result.cards, player, "giveAuto").gaintag.add("fenlie");
                 await player.loseMaxHp();
-                await player.recover(player.maxHp - player.hp);
+                await player.recoverTo(player.maxHp);
             }
         },
         intro: {
@@ -101,6 +101,8 @@ const skills = {
                             }
                         });
                     }
+                    "step 2";
+                    game.delayx();
                 }
             }
         }
@@ -163,6 +165,7 @@ const skills = {
                 },
                 logTarget: "target",
                 content(event, trigger, player) {
+                    "step 0";
                     player.judge(function(card) {
                         const suit = get.suit(card);
                         if (suit == "club") {
@@ -170,13 +173,56 @@ const skills = {
                         } else if (suit == "spade") {
                             trigger.target.turnOver();
                         } else if (suit == "heart") {
-                            trigger.target.recover(trigger.target.maxHp - trigger.target.hp);
+                            trigger.target.recoverTo(trigger.target.maxHp);
                             trigger.target.draw(3);
                         } else {
                             player.loseHp();
                             player.chooseToDiscard(3, true);
                         }
                     });
+                    "step 1";
+                    game.delayx();
+                }
+            }
+        }
+    },
+
+    riye: {
+        mark: true,
+        marktext: "☯",
+        zhuanhuanji: true,
+        forced: true,
+        frequent: true,
+        intro: {
+            content(storage, player, skill) {
+                return `回合开始时，你选择一项：1.${storage ? "回复一点体力" : "失去一点体力"}；2.${storage ? "摸两张牌" : "弃置两张牌"}。`;
+            }
+        },
+        trigger: {
+            player: "phaseBegin"
+        },
+        async content(event, trigger, player) {
+            player.changeZhuanhuanji("riye");
+
+            if (player.storage.riye) {
+                const directcontrol = await player.chooseControl("失去一点体力", "弃置两张牌", function(event, player) {
+                    return _status.event.choice;
+                }).forResultControl();
+
+                if (directcontrol) {
+                    player.loseHp();
+                } else {
+                    player.chooseToDiscard(2, true);
+                }
+            } else {
+                const directcontrol = await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
+                    return _status.event.choice;
+                }).forResultControl();
+
+                if (directcontrol) {
+                    player.recover();
+                } else {
+                    player.draw(2);
                 }
             }
         }

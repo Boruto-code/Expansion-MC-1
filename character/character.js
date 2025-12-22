@@ -13,6 +13,12 @@ const characters = {
         group: "wang",
         hp: 4,
         skills: ["jinggong", "qianggong"]
+    },
+    zombie: {
+        sex: "male",
+        group: "wang",
+        hp: 4,
+        skills: ["riye"]
     }
 };
 
