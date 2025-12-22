@@ -8,6 +8,12 @@ const characters = {
         hp: 4,
         skills: ["fenlie", "ronghe", "liexi"]
     },
+    skeleton: {
+        sex: "male",
+        group: "wang",
+        hp: 4,
+        skills: ["jinggong", "qianggong"]
+    }
 };
 
 for (let i in characters) {

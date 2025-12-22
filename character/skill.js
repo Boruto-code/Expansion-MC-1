@@ -56,6 +56,7 @@ const skills = {
                     player: "useCardToPlayered"
                 },
                 forced: true,
+                frequent: true,
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
@@ -100,6 +101,82 @@ const skills = {
                             }
                         });
                     }
+                }
+            }
+        }
+    },
+
+    jinggong: {
+        trigger: {
+            player: "useCardToPlayered"
+        },
+        forced: true,
+        frequent: true,
+        filter(event, player) {
+            return event.card.name == "sha";
+        },
+        logTarget: "target",
+        content(event, trigger, player) {
+            if (trigger.target.hp <= Math.floor(trigger.target.maxHp / 2)) {
+                trigger.getParent().directHit.add(trigger.target);
+            }
+        },
+        mod: {
+            targetInRange(card) {
+                return true;
+            }
+        }
+    },
+    qianggong: {
+        group: ["qianggong_1", "qianggong_2"],
+        subSkill: {
+            1: {
+                enable: "chooseToUse",
+                filterCard(card, player) {
+                    return get.color(card) == "black";
+                },
+                viewAs: { name: "sha" },
+                viewAsFilter(player) {
+                    if (get.zhu(player, "shouyue")) {
+                        if (!player.countCards("hes")) {
+                            return false;
+                        }
+                    } else {
+                        if (!player.countCards("hes", { color: "black" })) {
+                            return false;
+                        }
+                    }
+                },
+                position: "hes",
+                prompt: "将一张黑色牌当杀使用",
+                check(card) {
+                    return 5 - get.value(card);
+                }
+            },
+            2: {
+                usable: 1,
+                trigger: {
+                    player: "useCardToPlayered"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                logTarget: "target",
+                content(event, trigger, player) {
+                    player.judge(function(card) {
+                        const suit = get.suit(card);
+                        if (suit == "club") {
+                            trigger.getParent().baseDamage += Math.floor(trigger.target.maxHp / 2);
+                        } else if (suit == "spade") {
+                            trigger.target.turnOver();
+                        } else if (suit == "heart") {
+                            trigger.target.recover(trigger.target.maxHp - trigger.target.hp);
+                            trigger.target.draw(3);
+                        } else {
+                            player.loseHp();
+                            player.chooseToDiscard(3, true);
+                        }
+                    });
                 }
             }
         }
