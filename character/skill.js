@@ -236,8 +236,33 @@ const skills = {
         content(event, trigger, player) {
             player.judge(function(card) {
                 const suit = get.suit(card);
+                if (suit == "club") {
+                    // 僵尸
+                } else if (suit == "spade") {
+                    // 僵尸村民
+                } else if (suit == "heart") {
+                    // 溺尸
+                } else {
+                    // 尸壳
+                }
             });
         }
+    },
+    zhibao: {
+        forced: true,
+        frequent: true,
+        trigger: {
+            target: "useCardToBefore"
+        },
+        filter(event, player) {
+            return event.card.name == "nanman"||event.card.name == "wanjian";
+        },
+        async content(event, trigger, player) {
+            trigger.cancel();
+        }
+    },
+    jinxi: {
+        // Pass
     }
 };
 
