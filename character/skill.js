@@ -205,26 +205,55 @@ const skills = {
             player.changeZhuanhuanji("riye");
 
             if (player.storage.riye) {
-                const directcontrol = await player.chooseControl("失去一点体力", "弃置两张牌", function(event, player) {
-                    return _status.event.choice;
-                }).forResultControl();
+                const directcontrol = 
+                    await player.chooseControl("失去一点体力", "弃置两张牌", function(event, player) {
+                        if (player.hp > 2) {
+                            return "失去一点体力";
+                        } else {
+                            return "弃置两张牌";
+                        }
+                    }).set("prompt", "日：失去一点体力或弃置两张牌").forResultControl();
 
-                if (directcontrol) {
+                if (directcontrol == "失去一点体力") {
                     player.loseHp();
                 } else {
                     player.chooseToDiscard(2, true);
                 }
             } else {
-                const directcontrol = await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
-                    return _status.event.choice;
-                }).forResultControl();
+                const directcontrol = 
+                    await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
+                        if (player.hp == player.maxHp) {
+                            return "摸两张牌";
+                        } else {
+                            return "回复一点体力";
+                        }
+                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResultControl();
 
-                if (directcontrol) {
+                if (directcontrol == "回复一点体力") {
                     player.recover();
                 } else {
                     player.draw(2);
                 }
             }
+        }
+    },
+    ganran: {
+        trigger: {
+            global: "damageBegin4"
+        },
+        forced: true,
+        frequent: true,
+        filter(event, player) {
+            if (!event.source || event.source != player || event.player == player) {
+				return false;
+			}
+			return event.num >= event.player.hp && !player.getStorage("ganran").includes(event.player);
+        },
+        logTarget: "player",
+        content(event, trigger, player) {
+            trigger.cancel();
+            player.markAuto("ganran", [trigger.player]);
+            event.player.changeGroup("wang");
         }
     },
     bianzhong: {
@@ -237,7 +266,8 @@ const skills = {
             player.judge(function(card) {
                 const suit = get.suit(card);
                 if (suit == "club") {
-                    // 僵尸
+                    player.addSkill("zhibao");
+                    player.addSkill("jinxi");
                 } else if (suit == "spade") {
                     // 僵尸村民
                 } else if (suit == "heart") {
@@ -265,10 +295,59 @@ const skills = {
         group: ["jinxi_1", "jinxi_2"],
         subSkill: {
             1: {
+                trigger: {
+                    global: "damageBegin4"
+                },
                 forced: true,
                 frequent: true,
-                
+                filter(event, player) {
+                    return get.distance(player, event.player) > 1 && event.source != player;
+                },
+                logTarget: "player",
+                content(event, trigger, player) {
+                    trigger.cancel();
+                }
+            },
+            2: {
+                trigger: {
+                    global: "damageBegin1"
+                },
+                forced: true,
+                frequent: true,
+                filter(event, player) {
+                    return get.distance(event.player, player) <= 1;
+                },
+                content(event, trigger, player) {
+                    trigger.num++;
+                }
             }
+        }
+    },
+    tongdi: {
+        trigger: {
+            global: "damageEnd"
+        },
+        forced: true,
+        frequent: true,
+        logTarget: "player",
+        content(event, trigger, player) {
+            "step 0";
+            player.draw(trigger.num);
+            "step 1";
+            const targets = 
+                player
+                    .chooseTarget(trigger.num, true, `请选择${get.cnNumber(trigger.num)}名角色`)
+                    .forResult();
+            "step 2";
+            for (let t of targets.targets) {
+                t.draw(trigger.num);
+            }
+        }
+    },
+    jinghua: {
+        juexingji: true,
+        trigger: {
+            player: "dyingEnd"
         }
     }
 };
