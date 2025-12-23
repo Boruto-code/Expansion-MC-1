@@ -30,7 +30,9 @@ const skills = {
                 player.loseToDiscardpile(cards);
             }
         },
-        "_priority": 0,
+        ai: {
+            maixie: true
+        }
     },
     ronghe: {
         enable: "phaseUse",
@@ -57,6 +59,7 @@ const skills = {
                 },
                 forced: true,
                 frequent: true,
+                popup: true,
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
@@ -114,6 +117,7 @@ const skills = {
         },
         forced: true,
         frequent: true,
+        popup: false,
         filter(event, player) {
             return event.card.name == "sha";
         },
@@ -241,8 +245,6 @@ const skills = {
         trigger: {
             global: "damageBegin4"
         },
-        forced: true,
-        frequent: true,
         filter(event, player) {
             if (!event.source || event.source != player || event.player == player) {
 				return false;
@@ -253,7 +255,7 @@ const skills = {
         content(event, trigger, player) {
             trigger.cancel();
             player.markAuto("ganran", [trigger.player]);
-            event.player.changeGroup("wang");
+            trigger.player.changeGroup("wang");
         }
     },
     bianzhong: {
@@ -266,10 +268,9 @@ const skills = {
             player.judge(function(card) {
                 const suit = get.suit(card);
                 if (suit == "club") {
-                    player.addSkill("zhibao");
-                    player.addSkill("jinxi");
+                    player.addSkills(["zhibao", "jinxi"]);
                 } else if (suit == "spade") {
-                    // 僵尸村民
+                    player.addSkills(["tongdi", "jinghua"]);
                 } else if (suit == "heart") {
                     // 溺尸
                 } else {
@@ -315,7 +316,7 @@ const skills = {
                 forced: true,
                 frequent: true,
                 filter(event, player) {
-                    return get.distance(event.player, player) <= 1;
+                    return event.player !== player && get.distance(event.player, player) <= 1;
                 },
                 content(event, trigger, player) {
                     trigger.num++;
@@ -346,8 +347,67 @@ const skills = {
     },
     jinghua: {
         juexingji: true,
+        forced: true,
         trigger: {
             player: "dyingEnd"
+        },
+        async content(event, trigger, player) {
+            await player.loseMaxHp();
+            await player.recoverTo(player.maxHp);
+            await player.removeSkill("riye");
+            await player.addSkill("tongdi_upgrade");
+        }
+    },
+    tongdi_upgrade: {
+        trigger: {
+            source: "damageBegin"
+        },
+        forced: true,
+        frequent: true,
+        logTarget: "player",
+        content(event, trigger, player) {
+            "step 0";
+            player.draw(3);
+            "step 1";
+            const targets = player.chooseTarget(3, false, `请选择三名角色`).forResult();
+            "step 2";
+            for (let t of targets.targets) {
+                t.draw(3);
+            }
+        }
+    },
+    shuizhan: {
+        group: ["shuizhan_1", "shuizhan_2"],
+        subSkill: {
+            1: {
+                forced: true,
+                frequent: true,
+                trigger: {
+                    player: "damageBegin2"
+                },
+                content(event, trigger, player) {
+                    player.judge(function(card) {
+                        if (get.color(card) == "red") {
+                            trigger.num--;
+                        }
+                    })
+                }
+            },
+            2: {
+                forced: true,
+                frequent: true,
+                trigger: {
+                    global: "damageBegin2"
+                },
+                logTarget: "player",
+                content(event, trigger, player) {
+                    player.judge(function(card) {
+                        if (get.color(card) == "red") {
+                            trigger.num++;
+                        }
+                    })
+                }
+            }
         }
     }
 };
