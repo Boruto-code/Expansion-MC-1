@@ -2,6 +2,23 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
+    poison_effect: {
+        forced: true,
+        frequent: true,
+        popup: false,
+        trigger: {
+            player: "phaseBegin"
+        },
+        async content(event, player) {
+            if (player.countMark("poison") == 0) {
+                await player.removeSkill("poison_effect");
+            } else {
+                await player.loseHp();
+                await player.removeMark("poison");
+            }
+        }
+    },
+
     fenlie: {
         trigger: {
             player: "damageEnd"
@@ -277,7 +294,8 @@ const skills = {
                     player.removeSkill("riye");
                     player.addSkills(["shuizhan", "jianji", "riye_edit"]);
                 } else {
-                    // 尸壳
+                    player.removeSkill("riye");
+                    player.addSkills(["fuhua", "riye_edit_2"]);
                 }
             });
         }
@@ -342,8 +360,8 @@ const skills = {
                     .chooseTarget(trigger.num, true, `请选择${get.cnNumber(trigger.num)}名角色`)
                     .forResult();
             "step 2";
-            for (let t of targets.targets) {
-                t.draw(trigger.num);
+            for (let target of targets.targets) {
+                target.draw(trigger.num);
             }
         }
     },
@@ -398,7 +416,7 @@ const skills = {
                 forced: true,
                 frequent: true,
                 trigger: {
-                    global: "damageBegin2"
+                    source: "damageBegin2"
                 },
                 logTarget: "player",
                 content(event, trigger, player) {
@@ -418,8 +436,9 @@ const skills = {
             player: "phaseZhunbeiBegin"
         },
         derivation: "yuanji",
-        content(event, player) {
-            player.judge(function(card) {
+        async content(event, player) {
+            await player.awakenSkill("jianji");
+            await player.judge(function(card) {
                 if (get.color(card) == "red") {
                     player.disableEquip(1);
                     player.addSkill("yuanji");
@@ -472,7 +491,7 @@ const skills = {
                 if (directcontrol == "回复一点体力") {
                     player.recover();
                 } else {
-                    player.chooseToDiscard(2, true);
+                    player.draw();
                 }
             } else {
                 const directcontrol = 
@@ -489,6 +508,57 @@ const skills = {
                 } else {
                     player.draw(2);
                 }
+            }
+        }
+    },
+    fuhua: {
+        trigger: {
+            source: "shaDamage"
+        },
+        logTarget: "target",
+        content(event, trigger, player) {
+            "step 0";
+            trigger.target.addMark("poison");
+            "step 1";
+            trigger.target.addSkills(["fuhua_effect", "poison_effect"]);
+        }
+    },
+    fuhua_effect: {
+        forced: true,
+        frequent: true,
+        popup: false,
+        sourceSkill: "fuhua",
+        trigger: {
+            player: "phaseEnd"
+        },
+        async content(event, player) {
+            if (player.countMark("poison") == 0) {
+                await player.removeSkill("fuhua_effect");
+            } else {
+                await player.chooseToDiscard(1, true);
+            }
+        }
+    },
+    riye_edit_2: {
+        mark: true,
+        marktext: "☯",
+        zhuanhuanji: true,
+        forced: true,
+        frequent: true,
+        trigger: {
+            player: "phaseEnd"
+        },
+        async content(event, trigger, player) {
+            player.changeZhuanhuanji("riye_edit_2");
+
+            if (player.storage.riye_edit_2) {
+                const players = game.filterPlayer();
+                
+                for (let i = 0; i < players.length; i++) {
+                    players[i].chooseToDiscard(1, true);
+                }
+            } else {
+                player.draw(2);
             }
         }
     }
