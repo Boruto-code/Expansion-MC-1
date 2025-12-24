@@ -329,11 +329,10 @@ const skills = {
     },
     tongdi: {
         trigger: {
-            global: "damageEnd"
+            source: "damageBegin"
         },
         forced: true,
         frequent: true,
-        logTarget: "player",
         content(event, trigger, player) {
             "step 0";
             player.draw(trigger.num);
@@ -367,7 +366,6 @@ const skills = {
         },
         forced: true,
         frequent: true,
-        logTarget: "player",
         content(event, trigger, player) {
             "step 0";
             player.draw(3);
@@ -461,7 +459,7 @@ const skills = {
         async content(event, trigger, player) {
             player.changeZhuanhuanji("riye_edit");
 
-            if (player.storage.riye) {
+            if (player.storage.riye_edit) {
                 const directcontrol = 
                     await player.chooseControl("回复一点体力", "摸一张牌", function(event, player) {
                         if (player.hp > 2) {
