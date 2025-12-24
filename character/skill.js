@@ -129,7 +129,9 @@ const skills = {
         },
         mod: {
             targetInRange(card) {
-                return true;
+                if (card.name == "sha") {
+                    return true;
+                }
             }
         }
     },
@@ -272,7 +274,8 @@ const skills = {
                 } else if (suit == "spade") {
                     player.addSkills(["tongdi", "jinghua"]);
                 } else if (suit == "heart") {
-                    // 溺尸
+                    player.removeSkill("riye");
+                    player.addSkills(["shuizhan", "jianji", "riye_edit"]);
                 } else {
                     // 尸壳
                 }
@@ -406,6 +409,87 @@ const skills = {
                             trigger.num++;
                         }
                     })
+                }
+            }
+        }
+    },
+    jianji: {
+        unique: true,
+        limited: true,
+        trigger: {
+            player: "phaseZhunbeiBegin"
+        },
+        derivation: "yuanji",
+        content(event, player) {
+            player.judge(function(card) {
+                if (get.color(card) == "red") {
+                    player.disableEquip(1);
+                    player.addSkill("yuanji");
+                }
+            })
+        }
+    },
+    yuanji: {
+        locked: true,
+        equipSkill: true,
+        noHidden: true,
+        inherit: "trident_skill",
+        forced: true,
+        popup: false,
+        mod: {
+            targetInRange(card) {
+                if (card.name == "sha") {
+                    return true;
+                }
+            }
+        }
+    },
+    riye_edit: {
+        mark: true,
+        marktext: "☯",
+        zhuanhuanji: true,
+        forced: true,
+        frequent: true,
+        intro: {
+            content(storage, player, skill) {
+                return `回合开始时，你选择一项：1.回复一点体力；2.${storage ? "摸两张牌" : "摸一张牌"}。`;
+            }
+        },
+        trigger: {
+            player: "phaseBegin"
+        },
+        async content(event, trigger, player) {
+            player.changeZhuanhuanji("riye_edit");
+
+            if (player.storage.riye) {
+                const directcontrol = 
+                    await player.chooseControl("回复一点体力", "摸一张牌", function(event, player) {
+                        if (player.hp > 2) {
+                            return "回复一点体力";
+                        } else {
+                            return "摸一张牌";
+                        }
+                    }).set("prompt", "日：回复一点体力或摸一张牌").forResultControl();
+
+                if (directcontrol == "回复一点体力") {
+                    player.recover();
+                } else {
+                    player.chooseToDiscard(2, true);
+                }
+            } else {
+                const directcontrol = 
+                    await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
+                        if (player.hp == player.maxHp) {
+                            return "摸两张牌";
+                        } else {
+                            return "回复一点体力";
+                        }
+                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResultControl();
+
+                if (directcontrol == "回复一点体力") {
+                    player.recover();
+                } else {
+                    player.draw(2);
                 }
             }
         }

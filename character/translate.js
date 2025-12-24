@@ -31,6 +31,12 @@ const translates = {
     jinghua_info: "觉醒技，你脱离濒死状态后，你将体力回复值体力上限并增加一点体力上限，然后你修改“同敌”。",
     tongdi_upgrade: "同敌",
     tongdi_upgrade_info: "锁定技，你对一名角色造成伤害后，你摸三张牌，然后你可以令至多三名角色摸三张牌。",
+    shuizhan: "水战",
+    shuizhan_info: "锁定技，你受到/造成伤害前，你进行一次判定，若为红色，此伤害-1/+1。",
+    jianji: "尖戟",
+    jianji_info: "限定技，准备阶段，你可以进行一次判定，若为红色，你获得“远击”并废除武器区。",
+    yuanji: "远击",
+    yuanji_info: "锁定技，你使用【杀】无距离限制；你视为装备着【三叉戟】。"
 };
 
 export default translates;
