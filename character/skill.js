@@ -85,7 +85,6 @@ const skills = {
                 },
                 forced: true,
                 frequent: true,
-                popup: true,
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
@@ -143,7 +142,6 @@ const skills = {
         },
         forced: true,
         frequent: true,
-        popup: false,
         filter(event, player) {
             return event.card.name == "sha";
         },
@@ -463,7 +461,6 @@ const skills = {
     yuanji: {
         forced: true,
         frequent: true,
-        popup: false,
         trigger: {
             source: "damageBegin1"
         },
