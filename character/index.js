@@ -5,6 +5,7 @@ import skills from "./skill.js";
 import translates from "./translate.js";
 import characterIntros from "./intro.js";
 import characterFilters from "./characterFilter.js";
+import characterSubstitutes from "./characterSubstitute.js";
 import { characterSort, characterSortTranslate } from "./sort.js";
 
 game.import("character", function() {
@@ -12,11 +13,10 @@ game.import("character", function() {
         name: "mc1",
         connect: true,
         character: { ...characters },
-        characterSort: {
-            mc1: characterSort
-        },
+        characterSort: { mc1: characterSort },
         characterFilter: { ...characterFilters },
         characterIntro: { ...characterIntros },
+        characterSubstitutes: { ...characterSubstitutes },
         skill: { ...skills },
         translate: { ...translates, ...characterSortTranslate },
         pinyins: { ...pinyins }
