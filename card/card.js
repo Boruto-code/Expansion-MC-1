@@ -20,9 +20,17 @@ game.import("card", function() {
                 equipSkill: true,
                 usable: 1,
                 enable: "phaseUse",
-                async content(event, trigger, player) {
-                    const target = event.targets[0];
-                    await player.useCard({ name: "sha", isCard: true }, target, false)
+                content(event, player) {
+                    event.result = player
+                        .chooseTarget("视为对一名其他角色使用一张【杀】", function (card, player, target) {
+                            if (player == target) {
+                                return false;
+                            }
+                            return player.canUse({ name: "sha" }, target, false);
+                        })
+                        .forResult();
+
+                    player.useCard({ name: "sha", isCard: true }, event.targets[0], false);
                 }
             }
         },

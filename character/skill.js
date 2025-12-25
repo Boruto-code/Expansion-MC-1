@@ -2,21 +2,28 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 
 /** @type { importCharacterConfig['skill'] } */
 const skills = {
-    poison_effect: {
+    poison: {
+        mark: true,
+        marktext: "毒",
+        intro: {
+            name: "中毒",
+            content: "拥有“毒”标记的角色回合开始时，失去一点体力并移去1枚“毒”标记。",
+        },
         forced: true,
         frequent: true,
         popup: false,
         trigger: {
             player: "phaseBegin"
         },
-        async content(event, player) {
+        content(event, player) {
             if (player.countMark("poison") == 0) {
-                await player.removeSkill("poison_effect");
+                player.removeSkill("poison");
             } else {
-                await player.loseHp();
-                await player.removeMark("poison");
+                player.loseHp();
+                player.removeMark("poison");
             }
-        }
+        },
+        
     },
 
     fenlie: {
@@ -355,12 +362,9 @@ const skills = {
             "step 0";
             player.draw(trigger.num);
             "step 1";
-            const targets = 
-                player
-                    .chooseTarget(trigger.num, true, `请选择${get.cnNumber(trigger.num)}名角色`)
-                    .forResult();
+            player.chooseTarget(trigger.num, false, `请选择${get.cnNumber(trigger.num)}名角色`);
             "step 2";
-            for (let target of targets.targets) {
+            for (let target of result.targets) {
                 target.draw(trigger.num);
             }
         }
@@ -388,10 +392,10 @@ const skills = {
             "step 0";
             player.draw(3);
             "step 1";
-            const targets = player.chooseTarget(3, false, `请选择三名角色`).forResult();
+            player.chooseTarget(3, false, `请选择三名角色`);
             "step 2";
-            for (let t of targets.targets) {
-                t.draw(3);
+            for (let target of result.targets) {
+                target.draw(3);
             }
         }
     },
@@ -436,11 +440,18 @@ const skills = {
             player: "phaseZhunbeiBegin"
         },
         derivation: "yuanji",
-        async content(event, player) {
-            await player.awakenSkill("jianji");
-            await player.judge(function(card) {
+        init(player) {
+            player.storage.jianji = false;
+        },
+        filter(event, player) {
+            return !player.storage.jianji;
+        },
+        content(event, player) {
+            "step 0";
+            player.awakenSkill("jianji");
+            "step 1";
+            player.judge(function(card) {
                 if (get.color(card) == "red") {
-                    player.disableEquip(1);
                     player.addSkill("yuanji");
                 }
             })
@@ -453,6 +464,9 @@ const skills = {
         inherit: "trident_skill",
         forced: true,
         popup: false,
+        filter(event, player) {
+            return player.hasEmptySlot(1);
+        },
         mod: {
             targetInRange(card) {
                 if (card.name == "sha") {
@@ -513,14 +527,19 @@ const skills = {
     },
     fuhua: {
         trigger: {
-            source: "shaDamage"
+            source: "damageSource"
         },
-        logTarget: "target",
+        filter(event, player) {
+            if (event._notrigger.includes(event.player)) {
+				return false;
+			}
+			return event.card && event.card.name == "sha" && event.player != player && event.player.isIn();
+        },
         content(event, trigger, player) {
             "step 0";
-            trigger.target.addMark("poison");
+            trigger.player.addMark("poison");
             "step 1";
-            trigger.target.addSkills(["fuhua_effect", "poison_effect"]);
+            trigger.player.addSkills(["fuhua_effect", "poison"]);
         }
     },
     fuhua_effect: {
@@ -531,11 +550,11 @@ const skills = {
         trigger: {
             player: "phaseEnd"
         },
-        async content(event, player) {
+        content(event, player) {
             if (player.countMark("poison") == 0) {
-                await player.removeSkill("fuhua_effect");
+                player.removeSkill("fuhua_effect");
             } else {
-                await player.chooseToDiscard(1, true);
+                player.chooseToDiscard(1, true);
             }
         }
     },
@@ -545,6 +564,11 @@ const skills = {
         zhuanhuanji: true,
         forced: true,
         frequent: true,
+        intro: {
+            content(storage, player, skill) {
+                return `回合结束时，${storage ? "你摸两张牌" : "所有角色弃置一张牌"}。`;
+            }
+        },
         trigger: {
             player: "phaseEnd"
         },
