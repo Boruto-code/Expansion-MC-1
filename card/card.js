@@ -21,7 +21,7 @@ game.import("card", function() {
                 usable: 1,
                 enable: "phaseUse",
                 content(event, player) {
-                    event.result = player
+                    const target = player
                         .chooseTarget("视为对一名其他角色使用一张【杀】", function (card, player, target) {
                             if (player == target) {
                                 return false;
@@ -30,7 +30,7 @@ game.import("card", function() {
                         })
                         .forResult();
 
-                    player.useCard({ name: "sha", isCard: true }, event.targets[0], false);
+                    player.useCard({ name: "sha", isCard: true }, target, false);
                 }
             }
         },
