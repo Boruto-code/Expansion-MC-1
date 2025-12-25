@@ -19,8 +19,10 @@ const skills = {
             if (player.countMark("poison") == 0) {
                 player.removeSkill("poison");
             } else {
-                player.loseHp();
                 player.removeMark("poison");
+                if (player.hp > 1) {
+                    player.loseHp();
+                }
             }
         },
         
@@ -453,24 +455,33 @@ const skills = {
             player.judge(function(card) {
                 if (get.color(card) == "red") {
                     player.addSkill("yuanji");
+                    player.disableEquip(1);
                 }
             })
         }
     },
     yuanji: {
-        locked: true,
-        equipSkill: true,
-        noHidden: true,
-        inherit: "trident_skill",
         forced: true,
+        frequent: true,
         popup: false,
+        trigger: {
+            source: "damageBegin1"
+        },
         filter(event, player) {
-            return player.hasEmptySlot(1);
+            return get.name(event.card) == "sha" && get.nature(event.card) == "thunder";
+        },
+        content(event, trigger, player) {
+            trigger.num++;
         },
         mod: {
             targetInRange(card) {
                 if (card.name == "sha") {
                     return true;
+                }
+            },
+            cardnature(card, player) {
+                if (get.name(card) == "sha") {
+                    return "thunder";
                 }
             }
         }
