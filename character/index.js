@@ -15,7 +15,6 @@ game.import("character", function() {
         characterSort: { mc1: characterSort },
         characterFilter: { ...characterFilters },
         characterIntro: { ...characterIntros },
-        characterSubstitutes: { ...characterSubstitutes },
         skill: { ...skills },
         translate: { ...translates, ...characterSortTranslate },
         pinyins: { ...pinyins }
