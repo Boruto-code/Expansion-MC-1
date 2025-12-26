@@ -16,13 +16,12 @@ const skills = {
             player: "phaseBegin"
         },
         content(event, player) {
+            player.removeMark("poison");
+            if (player.hp > 1) {
+                player.loseHp();
+            }
             if (player.countMark("poison") == 0) {
                 player.removeSkill("poison");
-            } else {
-                player.removeMark("poison");
-                if (player.hp > 1) {
-                    player.loseHp();
-                }
             }
         },
         
@@ -383,6 +382,9 @@ const skills = {
             await player.recoverTo(player.maxHp);
             await player.removeSkill("riye");
             await player.addSkill("tongdi_upgrade");
+        },
+        ai: {
+            maixie: true
         }
     },
     tongdi_upgrade: {
@@ -415,6 +417,8 @@ const skills = {
                     player.judge(function(card) {
                         if (get.color(card) == "red") {
                             trigger.num--;
+                        } else {
+                            player.draw(2);
                         }
                     })
                 }
@@ -430,6 +434,8 @@ const skills = {
                     player.judge(function(card) {
                         if (get.color(card) == "red") {
                             trigger.num++;
+                        } else {
+                            player.draw(2);
                         }
                     })
                 }

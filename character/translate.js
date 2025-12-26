@@ -33,7 +33,7 @@ const translates = {
     tongdi_upgrade: "同敌",
     tongdi_upgrade_info: "锁定技，你对一名角色造成伤害后，你摸三张牌，然后你可以令至多三名角色摸三张牌。",
     shuizhan: "水战",
-    shuizhan_info: "锁定技，你受到/造成伤害前，你进行一次判定，若为红色，此伤害-1/+1。",
+    shuizhan_info: "锁定技，你受到/造成伤害前，你进行一次判定：若为红色，此伤害-1/+1；若为黑色，你摸两张牌。",
     jianji: "尖戟",
     jianji_info: "限定技，准备阶段，你可以进行一次判定，若为红色，你获得“远击”并废除武器栏。",
     yuanji: "远击",
