@@ -297,12 +297,15 @@ const skills = {
                     player.addSkills(["zhibao", "jinxi"]);
                 } else if (suit == "spade") {
                     player.addSkills(["tongdi", "jinghua"]);
+                    player.changeSkin("bianzhong", "zombie_villager");
                 } else if (suit == "heart") {
                     player.removeSkill("riye");
                     player.addSkills(["shuizhan", "jianji", "riye_edit"]);
+                    player.changeSkin("bianzhong", "drowned");
                 } else {
                     player.removeSkill("riye");
                     player.addSkills(["fuhua", "riye_edit_2"]);
+                    player.changeSkin("bianzhong", "husk");
                 }
             });
         }

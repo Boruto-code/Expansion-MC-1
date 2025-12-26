@@ -5,7 +5,6 @@ import skills from "./skill.js";
 import translates from "./translate.js";
 import characterIntros from "./intro.js";
 import characterFilters from "./characterFilter.js";
-import characterSubstitutes from "./characterSubstitute.js";
 import { characterSort, characterSortTranslate } from "./sort.js";
 
 game.import("character", function() {

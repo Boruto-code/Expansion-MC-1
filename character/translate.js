@@ -43,7 +43,7 @@ const translates = {
     fuhua: "腐化",
     fuhua_info: "锁定技，你使用【杀】对目标角色造成伤害后，你赋予其中毒I；拥有“毒”标记的角色回合开始时，需弃置一张牌。",
     riye_edit_2: "日夜",
-    riye_edit_2_info: "转换技，锁定技，回合结束时，阳：所有角色弃置一张牌；阴：你摸两张牌。",
+    riye_edit_2_info: "转换技，锁定技，回合结束时，阳：所有角色弃置一张牌；阴：你摸两张牌。"
 };
 
 export default translates;
