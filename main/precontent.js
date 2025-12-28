@@ -3,4 +3,11 @@ import "../character/index.js";
 
 export async function precontent(config, pack) {
 	lib.translate.mc1_character_config = "MC-1";
+
+	const faction_datas = {
+		wang: {
+			color: "#991111",
+			translate: "亡"
+		}
+	};
 }
