@@ -31,12 +31,9 @@ const skills = {
             player: "damageEnd"
         },
         filter(event, player) {
-            return player.maxHp > 1;
+            return player.maxHp > 1 && player.countCards("h") > 0;
         },
         async content(event, trigger, player) {
-            if (!player.getCards("h").length){
-                return;
-            }
             const result = await player.chooseCard("h", "选择一张牌作为“裂”").forResult();
             if (result.bool){
                 await player.addToExpansion(result.cards, player, "giveAuto").gaintag.add("fenlie");
