@@ -299,7 +299,7 @@ const skills = {
                     player.changeSkin("bianzhong", "drowned");
                 } else {
                     player.removeSkill("riye");
-                    player.addSkills(["fuhua", "riye_edit_2"]);
+                    player.addSkills(["fuhua", "jiqun", "riye_edit_2"]);
                     player.changeSkin("bianzhong", "husk");
                 }
             });
@@ -569,6 +569,19 @@ const skills = {
             } else {
                 player.chooseToDiscard(1, true);
             }
+        }
+    },
+    jiqun: {
+        usable: 1,
+        enable: "phaseUse",
+        prompt(event){
+            return "出牌阶段限一次，你可以弃置一张手牌，然后获得一点护甲";
+        },
+        content(event, player) {
+            "step 0";
+            player.chooseToDiscard(1, true);
+            "step 1";
+            player.changeHujia(1, null, true);
         }
     },
     riye_edit_2: {
