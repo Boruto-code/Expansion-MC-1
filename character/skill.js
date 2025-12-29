@@ -574,9 +574,6 @@ const skills = {
     jiqun: {
         usable: 1,
         enable: "phaseUse",
-        prompt(event){
-            return "出牌阶段限一次，你可以弃置一张手牌，然后获得一点护甲";
-        },
         content(event, player) {
             "step 0";
             player.chooseToDiscard(1, true);
