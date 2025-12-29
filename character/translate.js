@@ -1,9 +1,13 @@
 const translates = {
     mc1: "MC-1",
 
+    wang: "亡",
+
     slime: "史莱姆",
     skeleton: "骷髅",
     zombie: "僵尸",
+    creeper: "苦力怕",
+    cavespider: "洞穴蜘蛛",
 
     poison: "中毒",
     fenlie: "分裂",
@@ -33,7 +37,7 @@ const translates = {
     tongdi_upgrade: "同敌",
     tongdi_upgrade_info: "锁定技，你对一名角色造成伤害后，你摸三张牌，然后你可以令至多三名角色摸三张牌。",
     shuizhan: "水战",
-    shuizhan_info: "锁定技，你受到/造成伤害前，你进行一次判定，若为红色，此伤害-1/+1。",
+    shuizhan_info: "锁定技，你受到/造成伤害前，你进行一次判定：若为红色，此伤害-1/+1；若为黑色，你摸两张牌。",
     jianji: "尖戟",
     jianji_info: "限定技，准备阶段，你可以进行一次判定，若为红色，你获得“远击”并废除武器栏。",
     yuanji: "远击",
@@ -43,7 +47,13 @@ const translates = {
     fuhua: "腐化",
     fuhua_info: "锁定技，你使用【杀】对目标角色造成伤害后，你赋予其中毒I；拥有“毒”标记的角色回合开始时，需弃置一张牌。",
     riye_edit_2: "日夜",
-    riye_edit_2_info: "转换技，锁定技，回合结束时，阳：所有角色弃置一张牌；阴：你摸两张牌。"
+    riye_edit_2_info: "转换技，锁定技，回合结束时，阳：所有角色弃置一张牌；阴：你摸两张牌。",
+    zibao: "自爆",
+    zibao_info: "锁定技，回合结束时，你选择一项：1.与上家交换座次并令其翻面；2.与下家交换座次并令其执行一个额外回合；3.对所有与你距离不大于1的角色造成五点伤害，然后你死亡。",
+    dusu: "毒素",
+    dusu_info: "出牌阶段限一次，你可以对一名角色造成一点伤害并赋予其中毒I；你使用【杀】对目标角色造成伤害时，你可以赋予其中毒II。",
+    qiantao: "潜逃",
+    qiantao_info: "锁定技，每名角色的回合限一次，你受到伤害前，若伤害来源拥有“毒”标记，你防止此伤害。"
 };
 
 export default translates;

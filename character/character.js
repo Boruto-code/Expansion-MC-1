@@ -19,6 +19,18 @@ const characters = {
         group: "wang",
         hp: 4,
         skills: ["riye", "ganran", "bianzhong"]
+    },
+    creeper: {
+        sex: "none",
+        group: "qun",
+        hp: 4,
+        skills: ["zibao"]
+    },
+    cavespider: {
+        sex: "none",
+        group: "qun",
+        hp: 3,
+        skills: ["dusu", "qiantao"]
     }
 };
 

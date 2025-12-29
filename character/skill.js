@@ -16,16 +16,14 @@ const skills = {
             player: "phaseBegin"
         },
         content(event, player) {
+            player.removeMark("poison");
+            if (player.hp > 1) {
+                player.loseHp();
+            }
             if (player.countMark("poison") == 0) {
                 player.removeSkill("poison");
-            } else {
-                player.removeMark("poison");
-                if (player.hp > 1) {
-                    player.loseHp();
-                }
             }
         },
-        
     },
 
     fenlie: {
@@ -269,10 +267,10 @@ const skills = {
     },
     ganran: {
         trigger: {
-            global: "damageBegin4"
+            source: "damageBegin4"
         },
         filter(event, player) {
-            if (!event.source || event.source != player || event.player == player) {
+            if (!event.source || event.player == player) {
 				return false;
 			}
 			return event.num >= event.player.hp && !player.getStorage("ganran").includes(event.player);
@@ -383,6 +381,9 @@ const skills = {
             await player.recoverTo(player.maxHp);
             await player.removeSkill("riye");
             await player.addSkill("tongdi_upgrade");
+        },
+        ai: {
+            maixie: true
         }
     },
     tongdi_upgrade: {
@@ -415,6 +416,8 @@ const skills = {
                     player.judge(function(card) {
                         if (get.color(card) == "red") {
                             trigger.num--;
+                        } else {
+                            player.draw(2);
                         }
                     })
                 }
@@ -430,6 +433,8 @@ const skills = {
                     player.judge(function(card) {
                         if (get.color(card) == "red") {
                             trigger.num++;
+                        } else {
+                            player.draw(2);
                         }
                     })
                 }
@@ -590,11 +595,106 @@ const skills = {
                 const players = game.filterPlayer();
                 
                 for (let i = 0; i < players.length; i++) {
-                    players[i].chooseToDiscard(1, true);
+                    players[i].chooseToDiscard(2, true);
                 }
             } else {
-                player.draw(2);
+                player.draw(3);
             }
+        }
+    },
+
+    zibao: {
+        forced: true,
+        frequent: true,
+        trigger: {
+            player: "phaseEnd"
+        },
+        async content(event, trigger, player) {
+            const result = 
+                await player.chooseControl("与上家交换座次", "与下家交换座次", "自爆！",).forResultControl();
+
+            if (result == "与上家交换座次") {
+                const preplayer = player.getPrevious();
+
+                game.broadcastAll(function(target1, target2) {
+                    game.swapSeat(target1, target2);
+                }, player, player.getPrevious());
+
+                preplayer.turnOver();
+            } else if (result == "与下家交换座次") {
+                const nextplayer = player.getNext();
+
+                game.broadcastAll(function(target1, target2) {
+                    game.swapSeat(target1, target2);
+                }, player, player.getNext());
+
+                nextplayer.insertPhase();
+            } else {
+                const targets = game.filterPlayer(function(current) {
+                    return current != player && get.distance(current, player) <= 1;
+                });
+
+                for (let i = 0; i < targets.length; i++) {
+                    targets[i].damage(5);
+                }
+
+                player.die();
+            }
+        },
+        ai: {
+            threaten: 8
+        }
+    },
+
+    dusu: {
+        group: ["dusu_1", "dusu_2"],
+        subSkill: {
+            1: {
+                usable: 1,
+                enable: "phaseUse",
+                prompt: "选择一名角色，对其造成一点伤害并赋予其中毒I",
+                filterTarget: lib.filter.notMe,
+                content() {
+                    "step 0";
+                    target.damage();
+                    "step 1";
+                    target.addMark("poison");
+                    "step 2";
+                    target.addSkill("poison");
+                }
+            },
+            2: {
+                usable: 1,
+                trigger: {
+                    source: "damageSource"
+                },
+                filter(event, player) {
+                    if (event._notrigger.includes(event.player)) {
+                        return false;
+                    }
+                    return event.card && event.card.name == "sha" && event.player != player && event.player.isIn();
+                },
+                content() {
+                    trigger.player.addMark("poison", 2);
+                    trigger.player.addSkill("poison");
+                }
+            }
+        }
+    },
+    qiantao: {
+        usable: 1,
+        forced: true,
+        frequent: true,
+        popup: false,
+        trigger: {
+            player: "damageBegin4"
+        },
+        logTarget: "player",
+        filter(event, player) {
+            return event.source.hasMark("poison");
+        },
+        content(event, trigger, player) {
+            trigger.cancel();
         }
     }
 };
