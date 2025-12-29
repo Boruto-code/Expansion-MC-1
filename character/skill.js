@@ -572,7 +572,7 @@ const skills = {
         }
     },
     jiqun: {
-        usable: 1,
+        usable: 2,
         enable: "phaseUse",
         content(event, player) {
             "step 0";
