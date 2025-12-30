@@ -703,6 +703,104 @@ const skills = {
         content(event, trigger, player) {
             trigger.cancel();
         }
+    },
+
+    zhiliao: {
+        forced: true,
+        frequent: true,
+        trigger: {
+            player: "phaseZhunbeiBegin"
+        },
+        content(event, player) {
+            player.recover(1);
+        }
+    },
+    tongxin: {
+        enable: "phaseUse",
+        filterTarget(player, target) {
+            return player != target && target.hasCard();
+        },
+        async content(event, player) {
+            const result = await event.target.chooseCard(true, "h").forResult();
+
+            if (result?.bool && result?.cards?.length) {
+                const { cards } = result;
+                await event.target.showCards(cards);
+                const [card] = cards;
+                for (let i = 0; i < 3; i++) {
+                    get.discardPile(true);
+                }
+
+                const give = await player.chooseCard(true, "h").forResult();
+                const count = 
+                    Number(get.type(card) == get.type(give)) 
+                    + Number(get.name(card) == get.name(give)) 
+                    + Number(get.number(card) == get.number(give)) 
+                    + Number(get.suit(card) == get.suit(give));
+                await event.target.gain(card, player, "give", "bySelf");
+
+                if (count == 0) {
+                    player.discardPlayerCard(player.countCards("h"), true);
+                    player.tempBanSkill("tongxin");
+                } else if (count == 1) {
+                    player.draw();
+                    player.tempBanSkill("tongxin");
+                } else if (count == 2) {
+                    player.draw(2);
+                    player.tempBanSkill("tongxin");
+                } else if (count == 3) {
+                    player.draw(3);
+                } else {
+                    player.draw(4);
+                    player.removeSkill("tongxin");
+                    player.addSkill("tongxin");
+                }
+            }
+        }
+    },
+    tongxin_edit: {
+        enable: "phaseUse",
+        filterTarget(player, target) {
+            return player != target && target.hasCard();
+        },
+        async content(event, player) {
+            const result = await event.target.chooseCard(true, "h").forResult();
+
+            if (result?.bool && result?.cards?.length) {
+                const { cards } = result;
+                await event.target.showCards(cards);
+                const [card] = cards;
+                for (let i = 0; i < 5; i++) {
+                    get.discardPile(true);
+                }
+
+                const give = await player.chooseCard(true, "h").forResult();
+                const count = 
+                    Number(get.type(card) == get.type(give)) 
+                    + Number(get.name(card) == get.name(give)) 
+                    + Number(get.number(card) == get.number(give)) 
+                    + Number(get.suit(card) == get.suit(give));
+                await event.target.gain(give, player, "give", "bySelf");
+
+                if (count == 0) {
+                    player.discardPlayerCard(player.countCards("h"), true);
+                    player.tempBanSkill("tongxin");
+                } else if (count == 1) {
+                    player.draw();
+                    player.tempBanSkill("tongxin");
+                } else if (count == 2) {
+                    player.draw(2);
+                    player.tempBanSkill("tongxin");
+                } else if (count == 3) {
+                    player.draw(3);
+                } else {
+                    player.draw(4);
+                }
+
+                const give2 = await player.chooseCard(true, "h").forResult();
+                await event.target.gain(give2, player, "give", "bySelf");
+            }
+        }
     }
 };
 

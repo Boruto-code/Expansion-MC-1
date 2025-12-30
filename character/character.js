@@ -31,6 +31,12 @@ const characters = {
         group: "qun",
         hp: 3,
         skills: ["dusu", "qiantao"]
+    },
+    allay: {
+        sex: "none",
+        group: "qun",
+        hp: 3,
+        skills: ["zhiliao", "tongxin"]
     }
 };
 

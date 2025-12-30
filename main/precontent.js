@@ -10,4 +10,10 @@ export async function precontent(config, pack) {
 			translate: "亡"
 		}
 	};
+
+	for (let i in faction_datas) {
+		lib.group.push(i);
+		lib.translate[i] = faction_datas[i].translate;
+		lib.translate[`${i}Color`] = faction_datas[i].color;
+	}
 }
