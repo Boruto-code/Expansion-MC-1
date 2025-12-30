@@ -721,7 +721,7 @@ const skills = {
             return player != target && target.hasCard();
         },
         async content(event, player) {
-            const result = await event.target.chooseCard(true, "h").forResult();
+            const result = await event.target.chooseCard("h").forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
@@ -731,7 +731,7 @@ const skills = {
                     get.discardPile(true);
                 }
 
-                const give = await player.chooseCard(true, "h").forResult();
+                const give = await player.chooseCard("h").forResult();
                 const count = 
                     Number(get.type(card) == get.type(give)) 
                     + Number(get.name(card) == get.name(give)) 
@@ -764,7 +764,7 @@ const skills = {
             return player != target && target.hasCard();
         },
         async content(event, player) {
-            const result = await event.target.chooseCard(true, "h").forResult();
+            const result = await event.target.chooseCard("h").forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
@@ -774,7 +774,7 @@ const skills = {
                     get.discardPile(true);
                 }
 
-                const give = await player.chooseCard(true, "h").forResult();
+                const give = await player.chooseCard("h").forResult();
                 const count = 
                     Number(get.type(card) == get.type(give)) 
                     + Number(get.name(card) == get.name(give)) 
@@ -797,7 +797,7 @@ const skills = {
                     player.draw(4);
                 }
 
-                const give2 = await player.chooseCard(true, "h").forResult();
+                const give2 = await player.chooseCard("h").forResult();
                 await event.target.gain(give2, player, "give", "bySelf");
             }
         }
