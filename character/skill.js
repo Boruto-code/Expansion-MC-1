@@ -105,7 +105,7 @@ const skills = {
                     player: "useCardToPlayered"
                 },
                 filter(event, player) {
-                    return event.card.name == "sha";
+                    return event.card.name == "sha" && player.countExpansions("fenlie");
                 },
                 logTarget: "target",
                 content(event, trigger, player) {
