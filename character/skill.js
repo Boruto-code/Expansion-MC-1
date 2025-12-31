@@ -717,7 +717,7 @@ const skills = {
     },
     tongxin: {
         enable: "phaseUse",
-        filterTarget(player, target) {
+        filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
         async content(event, player) {
@@ -728,7 +728,7 @@ const skills = {
                 await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 3; i++) {
-                    event.player.gain(get.discardPile(true));
+                    await event.player.gain(get.discardPile(true));
                 }
 
                 const give = await event.player.chooseCard("h", "交给目标一张手牌").forResult();
@@ -763,7 +763,7 @@ const skills = {
     },
     tongxin_edit: {
         enable: "phaseUse",
-        filterTarget(player, target) {
+        filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
         async content(event, player) {
@@ -774,7 +774,7 @@ const skills = {
                 await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 5; i++) {
-                    event.player.gain(get.discardPile(true));
+                    await event.player.gain(get.discardPile(true));
                 }
 
                 const give = event.player.chooseCard("h", "交给目标一张手牌").forResultCard();
