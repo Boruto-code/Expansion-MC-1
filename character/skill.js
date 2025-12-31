@@ -728,7 +728,7 @@ const skills = {
                 await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 3; i++) {
-                    player.gain(get.discardPile(true));
+                    event.player.gain(get.discardPile(true));
                 }
 
                 const give = await event.player.chooseCard("h", "交给目标一张手牌").forResult();
@@ -774,10 +774,10 @@ const skills = {
                 await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 5; i++) {
-                    player.gain(get.discardPile(true));
+                    event.player.gain(get.discardPile(true));
                 }
 
-                const give = player.chooseCard("h", "交给目标一张手牌").forResultCard();
+                const give = event.player.chooseCard("h", "交给目标一张手牌").forResultCard();
                 const count = 
                     Number(get.type(card) == get.type(give.cards[0])) 
                     + Number(get.name(card) == get.name(give.cards[0])) 
@@ -786,18 +786,18 @@ const skills = {
                 await event.target.gain(give.cards, player, "give", "bySelf");
 
                 if (count == 0) {
-                    player.discardPlayerCard(player.countCards("h"), true);
-                    player.tempBanSkill("tongxin");
+                    event.player.discardPlayerCard(player.countCards("h"), true);
+                    event.player.tempBanSkill("tongxin");
                 } else if (count == 1) {
-                    player.draw();
-                    player.tempBanSkill("tongxin");
+                    event.player.draw();
+                    event.player.tempBanSkill("tongxin");
                 } else if (count == 2) {
-                    player.draw(2);
-                    player.tempBanSkill("tongxin");
+                    event.player.draw(2);
+                    event.player.tempBanSkill("tongxin");
                 } else if (count == 3) {
-                    player.draw(3);
+                    event.player.draw(3);
                 } else {
-                    player.draw(4);
+                    event.player.draw(4);
                 }
 
                 const give2 = player.chooseCard("h", "交给目标一张手牌").forResultCard();
