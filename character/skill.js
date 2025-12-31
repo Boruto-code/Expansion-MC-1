@@ -721,7 +721,7 @@ const skills = {
             return player != target && target.hasCard();
         },
         async content(event, player) {
-            const result = await event.target.chooseCard("h", "展示一张手牌").forResult();
+            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
