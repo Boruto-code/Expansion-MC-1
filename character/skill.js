@@ -740,7 +740,7 @@ const skills = {
                 await event.player.give(give.cards, event.target);
 
                 if (count == 0) {
-                    event.player.discardPlayerCard(player.countCards("h"), true);
+                    event.player.chooseToDiscard(true, "h", event.player.countCards("h"));
                     event.player.tempBanSkill("tongxin");
                 } else if (count == 1) {
                     event.player.draw();
@@ -786,7 +786,7 @@ const skills = {
                 await event.player.give(give2.cards, event.target);
 
                 if (count == 0) {
-                    event.player.discardPlayerCard(event.player.countCards("h"), true);
+                    event.player.chooseToDiscard(true, "h", event.player.countCards("h"));
                     event.player.tempBanSkill("tongxin");
                 } else if (count == 1) {
                     event.player.draw();
