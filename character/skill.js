@@ -62,72 +62,67 @@ const skills = {
             return player.countExpansions("fenlie") > 0;
         },
         async content(event, trigger, player) {
-            const result = await player.chooseCardButton(
-                player.getExpansions("fenlie"), 1, "选择移去一张“裂”", true
-            ).forResultLinks();
-            await player.loseToDiscardpile(result);
+            const result = await player
+                    .chooseCardButton(player.getExpansions("fenlie"), 1, "选择收回一张“裂”", true)
+                    .forResultLinks();
+
+            await player.gain(result);
             await player.gainMaxHp();
             await player.recover();
         },
-        "_priority": 0,
     },
     liexi: {
-        group: ["liexi_1", "liexi_2"],
-        subSkill: {
-            1: {
-                trigger: {
-                    player: "useCardToPlayered"
-                },
-                forced: true,
-                frequent: true,
-                filter(event, player) {
-                    return event.card.name == "sha";
-                },
-                content(event, trigger, player) {
-                    if (player.countExpansions("fenlie") >= 3){
-                        trigger.getParent().directHit.add(trigger.target);
-                    }
-                },
-                mod: {
-                    cardUsable(card, player, num) {
-                        if (card.name == "sha") {
-                            return 2 ** player.countExpansions("fenlie");
-                        }
-                    },
-                    maxHandcardBase(player, num) {
-                        return 4;
-                    }
+        trigger: {
+            player: "useCardToPlayered"
+        },
+        forced: true,
+        frequent: true,
+        filter(event, player) {
+            return event.card.name == "sha";
+        },
+        content(event, trigger, player) {
+            if (player.countExpansions("fenlie") >= 3){
+                trigger.getParent().directHit.add(trigger.target);
+            }
+        },
+        mod: {
+            cardUsable(card, player, num) {
+                if (card.name == "sha") {
+                    return 2 ** player.countExpansions("fenlie");
                 }
             },
-            2: {
-                usable: 1,
-                trigger: {
-                    player: "useCardToPlayered"
-                },
-                filter(event, player) {
-                    return event.card.name == "sha" && player.countExpansions("fenlie");
-                },
-                logTarget: "target",
-                content(event, trigger, player) {
-                    "step 0";
-                    for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
-                        player.discardPlayerCard(trigger.target, "h", true);
-                    }
-                    "step 1";
-                    for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
-                        player.judge(function(card) {
-                            if (get.color(card) == "red") {
-                                trigger.target.loseHp(1);
-                            }
-                            else {
-                                player.discardPlayerCard(trigger.target, "he", true);
-                            }
-                        });
-                    }
-                    "step 2";
-                    game.delayx();
-                }
+            maxHandcardBase(player, num) {
+                return 4;
             }
+        }
+    },
+    weigong: {
+        usable: 1,
+        trigger: {
+            player: "useCardToPlayered"
+        },
+        filter(event, player) {
+            return event.card.name == "sha" && player.countExpansions("fenlie");
+        },
+        logTarget: "target",
+        content(event, trigger, player) {
+            "step 0";
+            for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
+                player.discardPlayerCard(trigger.target, "h", true);
+            }
+            "step 1";
+            for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
+                player.judge(function(card) {
+                    if (get.color(card) == "red") {
+                        trigger.target.loseHp(1);
+                    }
+                    else {
+                        player.discardPlayerCard(trigger.target, "he", true);
+                    }
+                });
+            }
+            "step 2";
+            game.delayx();
         }
     },
 
@@ -352,7 +347,8 @@ const skills = {
     },
     tongdi: {
         trigger: {
-            source: "damageBegin"
+            source: "damageEnd",
+            player: "damageEnd"
         },
         forced: true,
         frequent: true,
@@ -360,7 +356,7 @@ const skills = {
             "step 0";
             player.draw(trigger.num);
             "step 1";
-            player.chooseTarget(trigger.num, false, `请选择${get.cnNumber(trigger.num)}名角色`);
+            player.chooseTarget([1, trigger.num], false, `请选择至多${get.cnNumber(trigger.num)}名角色`);
             "step 2";
             for (let target of result.targets) {
                 target.draw(trigger.num);
@@ -385,7 +381,8 @@ const skills = {
     },
     tongdi_upgrade: {
         trigger: {
-            source: "damageBegin"
+            source: "damageEnd",
+            player: "damageEnd"
         },
         forced: true,
         frequent: true,
@@ -393,7 +390,7 @@ const skills = {
             "step 0";
             player.draw(3);
             "step 1";
-            player.chooseTarget(3, false, `请选择三名角色`);
+            player.chooseTarget([1, 3], false, `请选择至多三名角色`);
             "step 2";
             for (let target of result.targets) {
                 target.draw(3);
@@ -574,6 +571,9 @@ const skills = {
     jiqun: {
         usable: 2,
         enable: "phaseUse",
+        filter(event, player) {
+            return player.countCards("h") > 0;
+        },
         content(event, player) {
             "step 0";
             player.chooseToDiscard(1, true);
@@ -717,6 +717,9 @@ const skills = {
     },
     tongxin: {
         enable: "phaseUse",
+        filter(event, player) {
+            return player.countCards("h") > 0;
+        },
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
@@ -753,7 +756,7 @@ const skills = {
                 } else {
                     event.player.draw(4);
                     event.player.removeSkill("tongxin");
-                    event.player.addSkill("tongxin");
+                    event.player.addSkill("tongxin_edit");
                 }
 
                 const give2 = await event.player.chooseCard("h", "交给目标一张手牌").forResult();
@@ -763,6 +766,9 @@ const skills = {
     },
     tongxin_edit: {
         enable: "phaseUse",
+        filter(event, player) {
+            return player.countCards("h") > 0;
+        },
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
@@ -777,7 +783,7 @@ const skills = {
                     await event.player.gain(get.discardPile(true));
                 }
 
-                const give = event.player.chooseCard("h", "交给目标一张手牌", true).forResultCard();
+                const give = event.player.chooseCard("h", "交给目标一张手牌", true).forResult();
                 const count = 
                     Number(get.type(card) == get.type(give.cards[0])) 
                     + Number(get.name(card) == get.name(give.cards[0])) 

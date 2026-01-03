@@ -6,7 +6,7 @@ const characters = {
         sex: "none",
         group: "qun",
         hp: 4,
-        skills: ["fenlie", "ronghe", "liexi"]
+        skills: ["fenlie", "ronghe", "liexi", "weigong"]
     },
     skeleton: {
         sex: "male",
@@ -18,7 +18,7 @@ const characters = {
         sex: "male",
         group: "wang",
         hp: 4,
-        skills: ["riye", "ganran", "bianzhong"]
+        skills: ["riye", "ganran", "bianzhong", "tongdi"]
     },
     creeper: {
         sex: "none",
