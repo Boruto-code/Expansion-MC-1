@@ -126,7 +126,7 @@ const skills = {
         }
     },
 
-    jinggong: {
+    feishi: {
         trigger: {
             player: "useCardToPlayered"
         },
