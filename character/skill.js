@@ -628,6 +628,7 @@ const skills = {
                 }, player, player.getPrevious());
 
                 preplayer.turnOver();
+                player.turnOver();
             } else if (result == "与下家交换座次") {
                 const nextplayer = player.getNext();
 
