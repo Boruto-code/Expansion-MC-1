@@ -126,7 +126,7 @@ const skills = {
         }
     },
 
-    feishi: {
+    jinggong: {
         trigger: {
             player: "useCardToPlayered"
         },
@@ -626,8 +626,6 @@ const skills = {
                 game.broadcastAll(function(target1, target2) {
                     game.swapSeat(target1, target2);
                 }, player, player.getPrevious());
-
-                //player.turnOver();
             } else if (result == "与下家交换座次") {
                 const nextplayer = player.getNext();
 
