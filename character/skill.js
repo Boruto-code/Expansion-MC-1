@@ -781,13 +781,13 @@ const skills = {
                     await event.player.gain(get.discardPile(true));
                 }
 
-                const give = event.player.chooseCard("h", "交给目标一张手牌", true).forResult();
+                const give = await event.player.chooseCard("h", "交给目标一张手牌", true).forResult();
                 const count = 
                     Number(get.type(card) == get.type(give.cards[0])) 
                     + Number(get.name(card) == get.name(give.cards[0])) 
                     + Number(get.number(card) == get.number(give.cards[0])) 
                     + Number(get.suit(card) == get.suit(give.cards[0]));
-                await event.player.give(give2.cards, event.target);
+                await event.player.give(give.cards, event.target);
 
                 if (count == 0) {
                     event.player.chooseToDiscard(true, "h", event.player.countCards("h"));
