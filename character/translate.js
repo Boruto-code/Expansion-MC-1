@@ -36,7 +36,7 @@ const translates = {
     tongdi: "同敌",
     tongdi_info: "锁定技，你造成或受到伤害后，你摸X张牌，然后你可以令至多X名角色摸X张牌（X为本次造成的伤害值）。",
     jinghua: "净化",
-    jinghua_info: "觉醒技，你脱离濒死状态后，你将体力回复值体力上限并减少一点体力上限，然后你修改“同敌”。",
+    jinghua_info: "觉醒技，你脱离濒死状态后，你将体力回复至体力上限并减少一点体力上限，然后你修改“同敌”。",
     tongdi_upgrade: "同敌",
     tongdi_upgrade_info: "锁定技，你造成或受到伤害后，你摸三张牌，然后你可以令至多三名角色摸三张牌。",
     shuizhan: "水战",
