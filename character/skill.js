@@ -361,6 +361,9 @@ const skills = {
             for (let target of result.targets) {
                 target.draw(trigger.num);
             }
+        },
+        ai: {
+            maixie: true
         }
     },
     jinghua: {
