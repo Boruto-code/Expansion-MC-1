@@ -592,7 +592,7 @@ const skills = {
         frequent: true,
         intro: {
             content(storage, player, skill) {
-                return `回合结束时，${storage ? "你摸两张牌" : "所有角色弃置一张牌"}。`;
+                return `回合结束时，${storage ? "你摸三张牌" : "所有角色弃置两张牌"}。`;
             }
         },
         trigger: {
