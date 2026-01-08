@@ -18,7 +18,7 @@ const characters = {
         sex: "male",
         group: "wang",
         hp: 4,
-        skills: ["riye", "ganran", "bianzhong"]
+        skills: ["riye", "ganran", "bianzhong", "tongdi"]
     },
     creeper: {
         sex: "none",
