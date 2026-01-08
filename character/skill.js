@@ -454,7 +454,7 @@ const skills = {
             "step 1";
             player.judge(function(card) {
                 if (get.color(card) == "red") {
-                    player.addSkill("yuanji");
+                    player.addAdditionalSkill("yuanji");
                     player.disableEquip(1);
                 }
             })
