@@ -564,11 +564,8 @@ const skills = {
             player: "phaseEnd"
         },
         content(event, player) {
-            if (player.countMark("poison") == 0) {
-                player.removeSkill("fuhua_effect");
-            } else {
-                player.chooseToDiscard(1, true);
-            }
+            player.chooseToDiscard(1, true);
+            player.removeSkill("fuhua_effect");
         }
     },
     jiqun: {
