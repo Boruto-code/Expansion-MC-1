@@ -361,6 +361,9 @@ const skills = {
             for (let target of result.targets) {
                 target.draw(trigger.num);
             }
+        },
+        ai: {
+            maixie: true
         }
     },
     jinghua: {
@@ -454,7 +457,7 @@ const skills = {
             "step 1";
             player.judge(function(card) {
                 if (get.color(card) == "red") {
-                    player.addSkill("yuanji");
+                    player.addAdditionalSkill("yuanji");
                     player.disableEquip(1);
                 }
             })
@@ -589,7 +592,7 @@ const skills = {
         frequent: true,
         intro: {
             content(storage, player, skill) {
-                return `回合结束时，${storage ? "你摸两张牌" : "所有角色弃置一张牌"}。`;
+                return `回合结束时，${storage ? "你摸三张牌" : "所有角色弃置两张牌"}。`;
             }
         },
         trigger: {
