@@ -552,20 +552,9 @@ const skills = {
             "step 0";
             trigger.player.addMark("poison");
             "step 1";
-            trigger.player.addAdditionalSkills(["fuhua_effect", "poison"]);
-        }
-    },
-    fuhua_effect: {
-        forced: true,
-        frequent: true,
-        popup: false,
-        sourceSkill: "fuhua",
-        trigger: {
-            player: "phaseEnd"
-        },
-        content(event, player) {
-            player.chooseToDiscard(1, true);
-            player.removeSkill("fuhua_effect");
+            trigger.player.addAdditionalSkill("poison");
+            "step 2";
+            player.discardPlayerCard("he", trigger.player, true);
         }
     },
     jiqun: {
