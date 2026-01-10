@@ -683,12 +683,9 @@ const skills = {
         trigger: {
             player: "damageBegin4"
         },
-        filter(event, player) {
-            return !player.hasSkill("qiantao_used");
-        },
         logTarget: "player",
         filter(event, player) {
-            return event.source.hasMark("poison");
+            return event.source.hasMark("poison") && !event.player.hasSkill("qiantao_used");
         },
         content(event, trigger, player) {
             trigger.cancel();
