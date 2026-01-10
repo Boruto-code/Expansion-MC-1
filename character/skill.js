@@ -552,7 +552,7 @@ const skills = {
             "step 0";
             trigger.player.addMark("poison");
             "step 1";
-            trigger.player.addSkills(["fuhua_effect", "poison"]);
+            trigger.player.addAdditionalSkills(["fuhua_effect", "poison"]);
         }
     },
     fuhua_effect: {
