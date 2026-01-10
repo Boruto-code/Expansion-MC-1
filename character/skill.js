@@ -683,12 +683,19 @@ const skills = {
         trigger: {
             player: "damageBegin4"
         },
+        filter(event, player) {
+            return !player.hasSkill("qiantao_used");
+        },
         logTarget: "player",
         filter(event, player) {
             return event.source.hasMark("poison");
         },
         content(event, trigger, player) {
             trigger.cancel();
+            player.addTempSkill("qiantao_used");
+        },
+        subSkill: {
+            used: { charlotte: true }
         }
     },
 
