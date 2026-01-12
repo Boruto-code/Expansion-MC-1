@@ -809,15 +809,15 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
-                async content() {
-                    await player.gain(get.discardPile(true));
+                async content(event, player) {
+                    await event.player.gain(get.discardPile(true));
                 }
             },
             2: {
                 usable: 1,
                 enable: "phaseUse",
-                async content() {
-                    const result = await player.chooseCard("h", "将一张手牌置于牌堆顶", true);
+                async content(event, player) {
+                    const result = await event.player.chooseCard("h", "将一张手牌置于牌堆顶", true);
                     await game.cardsGotoPile(result, "insert");
                 }
             },
@@ -825,9 +825,9 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 filterTarget: lib.filter.notMe,
-                async content() {
-                    const result = await player.chooseCard("h", "交给一名角色一张牌", true);
-                    await player.give(result, target);
+                async content(event, player) {
+                    const result = await event.player.chooseCard("h", "交给一名角色一张牌", true);
+                    await event.player.give(result, event.target);
                 }
             }
         }
