@@ -714,12 +714,12 @@ const skills = {
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
-        async content() {
-            const result = await target.chooseCard("h", "展示一张手牌", true).forResult();
+        async content(event, trigger, player) {
+            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
-                await target.showCards(cards);
+                await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 3; i++) {
                     await player.gain(get.discardPile(true));
@@ -731,7 +731,7 @@ const skills = {
                     + Number(get.name(card) == get.name(give.cards[0])) 
                     + Number(get.number(card) == get.number(give.cards[0])) 
                     + Number(get.suit(card) == get.suit(give.cards[0]));
-                await player.give(give.cards, target);
+                await player.give(give.cards, event.target);
 
                 if (count == 0) {
                     player.chooseToDiscard(true, "h", player.countCards("h"));
@@ -751,7 +751,7 @@ const skills = {
                 }
 
                 const give2 = await player.chooseCard("h", "交给目标一张手牌").forResult();
-                await player.give(give2.cards, target);
+                await player.give(give2.cards, event.target);
             }
         }
     },
@@ -763,12 +763,12 @@ const skills = {
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
-        async content() {
-            const result = await target.chooseCard("h", "展示一张手牌", true).forResult();
+        async content(event, trigger, player) {
+            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
-                await target.showCards(cards);
+                await event.target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 5; i++) {
                     await player.gain(get.discardPile(true));
@@ -780,7 +780,7 @@ const skills = {
                     + Number(get.name(card) == get.name(give.cards[0])) 
                     + Number(get.number(card) == get.number(give.cards[0])) 
                     + Number(get.suit(card) == get.suit(give.cards[0]));
-                await player.give(give2.cards, target);
+                await player.give(give2.cards, event.target);
 
                 if (count == 0) {
                     player.chooseToDiscard(true, "h", player.countCards("h"));
@@ -797,8 +797,8 @@ const skills = {
                     player.draw(4);
                 }
 
-                const give2 = player.chooseCard("h", "交给目标一张手牌").forResultCard();
-                await player.give(give2.cards, target);
+                const give2 = player.chooseCard("h", "交给目标一张手牌").forResult();
+                await player.give(give2.cards, event.target);
             }
         }
     },
@@ -809,25 +809,25 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
-                async content(event, player) {
-                    await event.player.gain(get.discardPile(true));
+                async content(event, trigger, player) {
+                    await player.gain(get.discardPile(true));
                 }
             },
             2: {
                 usable: 1,
                 enable: "phaseUse",
-                async content(event, player) {
-                    const result = await event.player.chooseCard("h", "将一张手牌置于牌堆顶", true);
-                    await game.cardsGotoPile(result, "insert");
+                async content(event, trigger, player) {
+                    const result = await player.chooseCard("h", "将一张手牌置于牌堆顶", true).forResult();
+                    await game.cardsGotoPile(result.cards, "insert");
                 }
             },
             3: {
                 usable: 1,
                 enable: "phaseUse",
                 filterTarget: lib.filter.notMe,
-                async content(event, player) {
-                    const result = await event.player.chooseCard("h", "交给一名角色一张牌", true);
-                    await event.player.give(result, event.target);
+                async content(event, trigger, player) {
+                    const result = await player.chooseCard("h", "交给目标一张牌", true).forResult();
+                    await player.give(result.cards, event.target);
                 }
             }
         }
