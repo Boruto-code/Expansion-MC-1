@@ -37,6 +37,13 @@ const characters = {
         group: "qun",
         hp: 3,
         skills: ["zhiliao", "tongxin"]
+    },
+    steve: {
+        sex: "male",
+        group: "qun",
+        hp: 3,
+        maxHp: 4,
+        skills: ["chuangshi", "bengkui"]
     }
 };
 

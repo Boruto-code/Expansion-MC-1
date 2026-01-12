@@ -714,44 +714,44 @@ const skills = {
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
-        async content(event, player) {
-            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
+        async content() {
+            const result = await target.chooseCard("h", "展示一张手牌", true).forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
-                await event.target.showCards(cards);
+                await target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 3; i++) {
-                    await event.player.gain(get.discardPile(true));
+                    await player.gain(get.discardPile(true));
                 }
 
-                const give = await event.player.chooseCard("h", "交给目标一张手牌", true).forResult();
+                const give = await player.chooseCard("h", "交给目标一张手牌", true).forResult();
                 const count = 
                     Number(get.type(card) == get.type(give.cards[0])) 
                     + Number(get.name(card) == get.name(give.cards[0])) 
                     + Number(get.number(card) == get.number(give.cards[0])) 
                     + Number(get.suit(card) == get.suit(give.cards[0]));
-                await event.player.give(give.cards, event.target);
+                await player.give(give.cards, target);
 
                 if (count == 0) {
-                    event.player.chooseToDiscard(true, "h", event.player.countCards("h"));
-                    event.player.tempBanSkill("tongxin");
+                    player.chooseToDiscard(true, "h", player.countCards("h"));
+                    player.tempBanSkill("tongxin");
                 } else if (count == 1) {
-                    event.player.draw();
-                    event.player.tempBanSkill("tongxin");
+                    player.draw();
+                    player.tempBanSkill("tongxin");
                 } else if (count == 2) {
-                    event.player.draw(2);
-                    event.player.tempBanSkill("tongxin");
+                    player.draw(2);
+                    player.tempBanSkill("tongxin");
                 } else if (count == 3) {
-                    event.player.draw(3);
+                    player.draw(3);
                 } else {
-                    event.player.draw(4);
-                    event.player.removeSkill("tongxin");
-                    event.player.addSkill("tongxin_edit");
+                    player.draw(4);
+                    player.removeSkill("tongxin");
+                    player.addSkill("tongxin_edit");
                 }
 
-                const give2 = await event.player.chooseCard("h", "交给目标一张手牌").forResult();
-                await event.player.give(give2.cards, event.target);
+                const give2 = await player.chooseCard("h", "交给目标一张手牌").forResult();
+                await player.give(give2.cards, target);
             }
         }
     },
@@ -763,42 +763,72 @@ const skills = {
         filterTarget(card, player, target) {
             return player != target && target.hasCard();
         },
-        async content(event, player) {
-            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
+        async content() {
+            const result = await target.chooseCard("h", "展示一张手牌", true).forResult();
 
             if (result?.bool && result?.cards?.length) {
                 const { cards } = result;
-                await event.target.showCards(cards);
+                await target.showCards(cards);
                 const [card] = cards;
                 for (let i = 0; i < 5; i++) {
-                    await event.player.gain(get.discardPile(true));
+                    await player.gain(get.discardPile(true));
                 }
 
-                const give = event.player.chooseCard("h", "交给目标一张手牌", true).forResult();
+                const give = player.chooseCard("h", "交给目标一张手牌", true).forResult();
                 const count = 
                     Number(get.type(card) == get.type(give.cards[0])) 
                     + Number(get.name(card) == get.name(give.cards[0])) 
                     + Number(get.number(card) == get.number(give.cards[0])) 
                     + Number(get.suit(card) == get.suit(give.cards[0]));
-                await event.player.give(give2.cards, event.target);
+                await player.give(give2.cards, target);
 
                 if (count == 0) {
-                    event.player.chooseToDiscard(true, "h", event.player.countCards("h"));
-                    event.player.tempBanSkill("tongxin");
+                    player.chooseToDiscard(true, "h", player.countCards("h"));
+                    player.tempBanSkill("tongxin");
                 } else if (count == 1) {
-                    event.player.draw();
-                    event.player.tempBanSkill("tongxin");
+                    player.draw();
+                    player.tempBanSkill("tongxin");
                 } else if (count == 2) {
-                    event.player.draw(2);
-                    event.player.tempBanSkill("tongxin");
+                    player.draw(2);
+                    player.tempBanSkill("tongxin");
                 } else if (count == 3) {
-                    event.player.draw(3);
+                    player.draw(3);
                 } else {
-                    event.player.draw(4);
+                    player.draw(4);
                 }
 
-                const give2 = event.player.chooseCard("h", "交给目标一张手牌").forResultCard();
-                await event.player.give(give2.cards, event.target);
+                const give2 = player.chooseCard("h", "交给目标一张手牌").forResultCard();
+                await player.give(give2.cards, target);
+            }
+        }
+    },
+
+    chuangshi: {
+        group: ["chuangshi_1", "chuangshi_2", "chuangshi_3", "chuangshi_4", "chuangshi_5", "chuangshi_6", "chuangshi_7", "chuangshi_8", "chuangshi_9"],
+        subSkill: {
+            1: {
+                usable: 1,
+                enable: "phaseUse",
+                async content() {
+                    await player.gain(get.discardPile(true));
+                }
+            },
+            2: {
+                usable: 1,
+                enable: "phaseUse",
+                async content() {
+                    const result = await player.chooseCard("h", "将一张手牌置于牌堆顶", true);
+                    await game.cardsGotoPile(result, "insert");
+                }
+            },
+            3: {
+                usable: 1,
+                enable: "phaseUse",
+                filterTarget: lib.filter.notMe,
+                async content() {
+                    const result = await player.chooseCard("h", "交给一名角色一张牌", true);
+                    await player.give(result, target);
+                }
             }
         }
     }
