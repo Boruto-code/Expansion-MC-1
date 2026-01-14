@@ -70,7 +70,8 @@ const translates = {
     chuangshi_info: "出牌阶段各限一次，你可以选择一项：1.获得弃牌堆中的一张牌；2.将一张手牌置于牌堆顶；3.交给一名角色一张牌；4.将一张牌置于武将牌上，称为“物”；5.将一张“物”返回手牌；6.摸一张牌；7.卜算5并摸一张牌；8.进行一次合成；9.对本回合下一张【杀】附魔。",
     chuangshi_1: "拾取",
     chuangshi_2: "放置",
-    chuangshi_3: "传递"
+    chuangshi_3: "传递",
+    chuangshi_4: "置物"
 };
 
 export default translates;

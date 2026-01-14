@@ -829,6 +829,19 @@ const skills = {
                     const result = await player.chooseCard("h", "交给目标一张牌", true).forResult();
                     await player.give(result.cards, event.target);
                 }
+            },
+            4: {
+                usable: 1,
+                enable: "phaseUse",
+                filter(event, player) {
+                    return player.countCards("h") > 0;
+                },
+                content(event, trigger, player) {
+                    "step 0";
+                    const result = player.chooseCard("h", "将一张手牌置于武将牌上", true).forResult();
+                    "step 1";
+                    player.addToExpansion(result.cards, player, "giveAuto").gaintag.add("chuangshi_4");
+                }
             }
         }
     }
