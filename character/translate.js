@@ -75,7 +75,8 @@ const translates = {
     chuangshi_5: "取物",
     chuangshi_6: "挖掘",
     chuangshi_7: "探索",
-    chuangshi_8: "合成"
+    chuangshi_8: "合成",
+    chuangshi_9: "附魔"
 };
 
 export default translates;

@@ -226,31 +226,31 @@ const skills = {
             player.changeZhuanhuanji("riye");
 
             if (player.storage.riye) {
-                const directcontrol = 
+                const result = 
                     await player.chooseControl("失去一点体力", "弃置两张牌", function(event, player) {
                         if (player.hp > 2) {
                             return "失去一点体力";
                         } else {
                             return "弃置两张牌";
                         }
-                    }).set("prompt", "日：失去一点体力或弃置两张牌").forResultControl();
+                    }).set("prompt", "日：失去一点体力或弃置两张牌").forResult();
 
-                if (directcontrol == "失去一点体力") {
+                if (result.control == "失去一点体力") {
                     player.loseHp();
                 } else {
                     player.chooseToDiscard(2, true);
                 }
             } else {
-                const directcontrol = 
+                const result = 
                     await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
                         if (player.hp == player.maxHp) {
                             return "摸两张牌";
                         } else {
                             return "回复一点体力";
                         }
-                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResultControl();
+                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResult();
 
-                if (directcontrol == "回复一点体力") {
+                if (result.control == "回复一点体力") {
                     player.recover();
                 } else {
                     player.draw(2);
@@ -508,31 +508,31 @@ const skills = {
             player.changeZhuanhuanji("riye_edit");
 
             if (player.storage.riye_edit) {
-                const directcontrol = 
+                const result = 
                     await player.chooseControl("回复一点体力", "摸一张牌", function(event, player) {
                         if (player.hp > 2) {
                             return "回复一点体力";
                         } else {
                             return "摸一张牌";
                         }
-                    }).set("prompt", "日：回复一点体力或摸一张牌").forResultControl();
+                    }).set("prompt", "日：回复一点体力或摸一张牌").forResult();
 
-                if (directcontrol == "回复一点体力") {
+                if (result.control == "回复一点体力") {
                     player.recover();
                 } else {
                     player.draw();
                 }
             } else {
-                const directcontrol = 
+                const result = 
                     await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
                         if (player.hp == player.maxHp) {
                             return "摸两张牌";
                         } else {
                             return "回复一点体力";
                         }
-                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResultControl();
+                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResult();
 
-                if (directcontrol == "回复一点体力") {
+                if (result.control == "回复一点体力") {
                     player.recover();
                 } else {
                     player.draw(2);
@@ -987,13 +987,77 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 async content(event, trigger, player) {
-
+                    const result = await player.chooseControl("雷", "火", "迫").forResult();
+                    if (result.control == "雷") {
+                        await player.chooseToDiscard(1, true);
+                        await player.addTempSkill("chuangshi_effect_1");
+                    } else if (result.control == "火") {
+                        await player.chooseToDiscard(1, true);
+                        await player.addTempSkill("chuangshi_effect_2");
+                    } else if (result.control == "迫") {
+                        await player.chooseToDiscard(2, true);
+                        await player.addTempSkill("chuangshi_effect_3");
+                    }
                 }
             },
             effect_1: {
                 usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    source: "damageBegin1"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    game.setNature(trigger, "thunder");
+                }
+            },
+            effect_2: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    source: "damageBegin1"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    game.setNature(trigger, "fire");
+                }
+            },
+            effect_3: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
                 trigger: {
                     
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    game.setNature(trigger, "thunder");
+                }
+            },
+            effect_7: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    source: "damageBegin1"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    trigger.num++;
                 }
             }
         }
