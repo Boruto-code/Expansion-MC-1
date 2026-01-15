@@ -874,7 +874,105 @@ const skills = {
                     await player.chooseToGuanxing(5).set("prompt", "探索：点击或拖动将牌移动到牌堆顶或牌堆底");
                     await player.draw();
                 }
-            }
+            },
+            7: {
+                usable: 1,
+                enable: "phaseUse",
+                filter(event, player) {
+                    return player.countCards("h");
+                },
+                async content(event, trigger, player) {
+                    const result = await player.chooseCard([1, 2], "h", "选择合成手牌", true).forResult();
+                    const card1 = result.cards[0];
+                    const suit = get.suit(card1, player),
+                        number = get.number(card1, player);
+                    
+                    let name, nature = null;
+
+                    await player.discard(result.cards);
+
+                    if (result.cards.length == 1) {
+                        switch (get.name(card1, player)) {
+                            case "sha":
+                                if (get.nature(card1, player) == "fire") {
+                                    name = "huogong";
+                                } else {
+                                    name = "shan";
+                                }
+                                break;
+                            case "shan":
+                                name = "sha";
+                                break;
+                            case "tao":
+                                name = "jiu";
+                                break;
+                            case "jiu":
+                                name = "tao";
+                                break;
+                            case "shandian":
+                                name = "sha";
+                                nature = "thunder";
+                                break;
+                            case "huogong":
+                                name = "sha";
+                                nature = "fire";
+                                break;
+                            case "nanman":
+                                name = "wanjian";
+                                break;
+                            case "wanjian":
+                                name = "nanman";
+                                break;
+                            case "guohe":
+                                name = "shunshou";
+                                break;
+                            case "shunshou":
+                                name = "guohe";
+                                break;
+                            case "taoyuan":
+                                name = "wugu";
+                                break;
+                            case "wugu":
+                                name = "taoyuan";
+                                break;
+                            case "wuzhong":
+                                let list = [];
+                                for (let card of lib.inpile) {
+                                    if (get.type(card) == "trick") {
+                                        list.push(["锦囊", "", card]);
+                                    }
+                                }
+                                const result = await player
+                                    .chooseButton(["合成：转化成任意一张普通锦囊牌", [list, "vcard"]], false)
+                                    .forResult();
+                                name = result.links[0][2];
+                                break;
+                            default:
+                                name = "tao";
+                        }
+                    } else {
+                        if (get.name(card1, player) == "wugu" && get.name(result.cards[1], player) == "wuxie") {
+                            name = "bingliang";
+                        } else if (get.name(card1, player) == "wuxie" && get.name(result.cards[1], player) == "wuxie") {
+                            let list = [];
+                            for (let card of lib.inpile) {
+                                if (get.type(card) == "trick") {
+                                    list.push(["锦囊", "", card]);
+                                }
+                            }
+                            const result = await player
+                                .chooseButton(["合成：转化成任意一张普通锦囊牌", [list, "vcard"]], false)
+                                .forResult();
+                            name = result.links[0][2];
+                        } else {
+                            name = "wuxie";
+                        }
+                    }
+
+                    const copy = await game.createCard2(name, suit, number, nature);
+                    await player.gain(copy);
+                }
+            } 
         }
     }
 };
