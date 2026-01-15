@@ -819,7 +819,7 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 filter(event, player) {
-                    return player.countCards("h");
+                    return player.countCards("h") > 0;
                 },
                 async content(event, trigger, player) {
                     const result = await player.chooseCard("h", "将一张手牌置于牌堆顶", true).forResult();
