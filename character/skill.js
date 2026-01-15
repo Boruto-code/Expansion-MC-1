@@ -874,11 +874,18 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 async content(event, trigger, player) {
-                    await player.chooseToGuanxing(5).set("prompt", "探索：点击或拖动将牌移动到牌堆顶或牌堆底");
                     await player.draw();
                 }
             },
             7: {
+                usable: 1,
+                enable: "phaseUse",
+                async content(event, trigger, player) {
+                    await player.chooseToGuanxing(5).set("prompt", "探索：点击或拖动将牌移动到牌堆顶或牌堆底");
+                    await player.draw();
+                }
+            },
+            8: {
                 usable: 1,
                 enable: "phaseUse",
                 filter(event, player) {
@@ -975,7 +982,20 @@ const skills = {
                     const copy = await game.createCard2(name, suit, number, nature);
                     await player.gain(copy);
                 }
-            } 
+            },
+            9: {
+                usable: 1,
+                enable: "phaseUse",
+                async content(event, trigger, player) {
+
+                }
+            },
+            effect_1: {
+                usable: 1,
+                trigger: {
+                    
+                }
+            }
         }
     }
 };
