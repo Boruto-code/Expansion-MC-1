@@ -7,7 +7,7 @@ const skills = {
         marktext: "毒",
         intro: {
             name: "中毒",
-            content: "拥有“毒”标记的角色回合开始时，失去一点体力并移去1枚“毒”标记。",
+            content: "拥有“毒”标记的角色回合开始时，失去一点体力（若体力为1，则不执行）并移去1枚“毒”标记。",
         },
         forced: true,
         frequent: true,
@@ -41,6 +41,7 @@ const skills = {
                 await player.recoverTo(player.maxHp);
             }
         },
+        marktext: "裂",
         intro: {
             content: "expansion",
             markcount: "expansion",
@@ -102,7 +103,7 @@ const skills = {
             player: "useCardToPlayered"
         },
         filter(event, player) {
-            return event.card.name == "sha" && player.countExpansions("fenlie");
+            return event.card.name == "sha" && player.countExpansions("fenlie") > 0;
         },
         logTarget: "target",
         content(event, trigger, player) {
@@ -376,6 +377,7 @@ const skills = {
             await player.loseMaxHp();
             await player.recoverTo(player.maxHp);
             await player.removeSkill("riye");
+            await player.changeGroup("qun");
             await player.addSkill("tongdi_upgrade");
         },
         ai: {
@@ -818,12 +820,15 @@ const skills = {
                 enable: "phaseUse",
                 async content(event, trigger, player) {
                     const result = await player.chooseCard("h", "将一张手牌置于牌堆顶", true).forResult();
-                    await game.cardsGotoPile(result.cards, "insert");
+                    await player.lose(result.cards, ui.cardPile, "invisible", "insert");
                 }
             },
             3: {
                 usable: 1,
                 enable: "phaseUse",
+                filter(event, player) {
+                    return player.countCards("h") > 0;
+                },
                 filterTarget: lib.filter.notMe,
                 async content(event, trigger, player) {
                     const result = await player.chooseCard("h", "交给目标一张牌", true).forResult();
@@ -841,6 +846,33 @@ const skills = {
                     const result = player.chooseCard("h", "将一张手牌置于武将牌上", true).forResult();
                     "step 1";
                     player.addToExpansion(result.cards, player, "giveAuto").gaintag.add("chuangshi_4");
+                },
+                marktext: "物",
+                intro: {
+                    content: "expansion",
+                    markcount: "expansion",
+                }
+            },
+            5: {
+                usable: 1,
+                enable: "phaseUse",
+                filter(event, player) {
+                    return player.countExpansions("chuangshi_4") > 0;
+                },
+                async content(event, trigger, player) {
+                    const result = await player
+                            .chooseCardButton(player.getExpansions("chuangshi_4"), [1, player.countExpansions("chuangshi_4")], "选择收回任意张“物”", true)
+                            .forResult();
+                    
+                    await player.gain(result.links);
+                }
+            },
+            6: {
+                usable: 1,
+                enable: "phaseUse",
+                async content(event, trigger, player) {
+                    await player.chooseToGuanxing(5).set("prompt", "探索：点击或拖动将牌移动到牌堆顶或牌堆底");
+                    await player.draw();
                 }
             }
         }
