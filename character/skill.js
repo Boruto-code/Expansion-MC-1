@@ -987,7 +987,7 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 async content(event, trigger, player) {
-                    const result = await player.chooseControl("雷", "火", "迫").forResult();
+                    const result = await player.chooseControl("雷", "火", "迫", "刺", "速", "迅", "锋", "坚", "重", "退").forResult();
                     if (result.control == "雷") {
                         await player.chooseToDiscard(1, true);
                         await player.addTempSkill("chuangshi_effect_1");
@@ -995,7 +995,7 @@ const skills = {
                         await player.chooseToDiscard(1, true);
                         await player.addTempSkill("chuangshi_effect_2");
                     } else if (result.control == "迫") {
-                        await player.chooseToDiscard(2, true);
+                        await player.chooseToDiscard(1, true);
                         await player.addTempSkill("chuangshi_effect_3");
                     }
                 }
@@ -1036,13 +1036,65 @@ const skills = {
                 frequent: true,
                 popup: false,
                 trigger: {
-                    
+                    player: "useCard"
                 },
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
                 async content(event, trigger, player) {
-                    game.setNature(trigger, "thunder");
+                    await player.draw(2);
+                }
+            },
+            effect_4: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "useCardToPlayered"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha" && event.target.countCards("h") > 0;
+                },
+                async content(event, trigger, player) {
+                    await player.discardPlayerCard(trigger.target, "he", true);
+                }
+            },
+            effect_5: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "useCardToEnd"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    await player.removeSkill("chuangshi_effect_5");
+                },
+                mod: {
+                    targetInRange(card) {
+                        if (card.name == "sha") {
+                            return true;
+                        }
+                    }
+                }
+            },
+            effect_6: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "useCardToPlayered"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    await trigger.getParent().directHit.add(trigger.target);
                 }
             },
             effect_7: {
@@ -1058,6 +1110,56 @@ const skills = {
                 },
                 async content(event, trigger, player) {
                     trigger.num++;
+                }
+            },
+            effect_8: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "useCardAfter"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    await player.gain(trigger.card, "gain2");
+                }
+            },
+            effect_9: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "useCardToEnd"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    await player.removeSkill("chuangshi_effect_9");
+                },
+                mod: {
+                    selectTarget(card, player, range) {
+                        range[1]++;
+                    }
+                }
+            },
+            effect_10: {
+                usable: 1,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "damageEnd"
+                },
+                filter(event, player) {
+                    return event.card.name == "sha";
+                },
+                async content(event, trigger, player) {
+                    await trigger.target.turnOver();
                 }
             }
         }
