@@ -987,7 +987,9 @@ const skills = {
                 usable: 1,
                 enable: "phaseUse",
                 async content(event, trigger, player) {
-                    const result = await player.chooseControl("雷", "火", "迫", "刺", "速", "迅", "锋", "坚", "重", "退").forResult();
+                    const result = await player
+                        .chooseControl("雷", "火", "迫", "刺", "速", "迅", "锋", "坚", "重", "退")
+                        .forResult();
                     if (result.control == "雷") {
                         await player.chooseToDiscard(1, true);
                         await player.addTempSkill("chuangshi_effect_1");
@@ -997,6 +999,27 @@ const skills = {
                     } else if (result.control == "迫") {
                         await player.chooseToDiscard(1, true);
                         await player.addTempSkill("chuangshi_effect_3");
+                    } else if (result.control == "刺") {
+                        await player.chooseToDiscard(1, true);
+                        await player.addTempSkill("chuangshi_effect_4");
+                    } else if (result.control == "速") {
+                        await player.chooseToDiscard(1, true);
+                        await player.addTempSkill("chuangshi_effect_5");
+                    } else if (result.control == "迅") {
+                        await player.chooseToDiscard(2, true);
+                        await player.addTempSkill("chuangshi_effect_6");
+                    } else if (result.control == "锋") {
+                        await player.chooseToDiscard(2, true);
+                        await player.addTempSkill("chuangshi_effect_7");
+                    } else if (result.control == "坚") {
+                        await player.chooseToDiscard(2, true);
+                        await player.addTempSkill("chuangshi_effect_8");
+                    } else if (result.control == "重") {
+                        await player.chooseToDiscard(2, true);
+                        await player.addTempSkill("chuangshi_effect_9");
+                    } else if (result.control == "退") {
+                        await player.chooseToDiscard(3, true);
+                        await player.addTempSkill("chuangshi_effect_10");
                     }
                 }
             },
@@ -1153,13 +1176,13 @@ const skills = {
                 frequent: true,
                 popup: false,
                 trigger: {
-                    player: "damageEnd"
+                    source: "damageEnd"
                 },
                 filter(event, player) {
                     return event.card.name == "sha";
                 },
                 async content(event, trigger, player) {
-                    await trigger.target.turnOver();
+                    await trigger.player.turnOver();
                 }
             }
         }
