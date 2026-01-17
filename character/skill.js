@@ -1186,6 +1186,67 @@ const skills = {
                 }
             }
         }
+    },
+    bengkui: {
+        mark: true,
+        limited: true,
+        unique: true,
+        init(player) {
+            player.storage.bengkui = false;
+        },
+        trigger: {
+            player: "dying"
+        },
+        async content(event, trigger, player) {
+            await player.awakenSkill("bengkui");
+            const players = game.filterPlayer();
+                
+            for (let i = 0; i < players.length; i++) {
+                await players[i].addSkillBlocker("bengkui");
+                await players[i].addSkill("bengkui_ban");
+                await players[i].discard(players[i].getCards("hej"));
+                await players[i].draw(4);
+
+                const delt = players[i].getHp(true) - 1;
+                if (delt > 0) {
+                    await players[i].loseHp(delt);
+                } else if (delt < 0) {
+                    await players[i].recover(-delt);
+                }
+            }
+            await player.changeGroup("shen");
+            await player.addSkill("bengkui_effect");
+            player.storage.bengkui = true;
+        },
+        skillBlocker(skill, player) {
+            return !lib.skill[skill].charlotte && !lib.skill[skill].persevereSkill;
+        },
+        
+        subSkill: {
+            effect: {
+                charlotte: true,
+                forced: true,
+                frequent: true,
+                popup: false,
+                trigger: {
+                    player: "phaseBegin"
+                },
+                content() {
+                    let winners = player.getFriends();
+                    game.over(player == game.me || winners.includes(game.me));
+                }
+            },
+            ban: {
+                charlotte: true,
+                mod: {
+                    cardEnabled(card, player) {
+                        if (card.name == "tao" || card.name == "taoyuan") {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 
