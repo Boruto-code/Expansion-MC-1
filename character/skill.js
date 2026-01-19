@@ -648,7 +648,7 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
-                prompt: "选择一名角色，对其造成一点伤害并赋予其中毒I",
+                prompt: "选择一名其他角色，对其造成一点伤害并赋予其中毒I",
                 filterTarget: lib.filter.notMe,
                 content() {
                     "step 0";
@@ -986,6 +986,9 @@ const skills = {
             9: {
                 usable: 1,
                 enable: "phaseUse",
+                filter(event, player) {
+                    return player.countCards("h") > 0;
+                },
                 async content(event, trigger, player) {
                     const result = await player
                         .chooseControl("雷", "火", "迫", "刺", "速", "迅", "锋", "坚", "重", "退")
@@ -1215,6 +1218,7 @@ const skills = {
                 }
             }
             await player.changeGroup("shen");
+            await player.changeSkin("bengkui", "steve_infinity");
             await player.addSkill("bengkui_effect");
             player.storage.bengkui = true;
         },
@@ -1246,6 +1250,20 @@ const skills = {
                     }
                 }
             }
+        }
+    },
+    
+    jianxiao: {
+        usable: 1,
+        enable: "phaseUse",
+        prompt: "弃置所有手牌并选择一名其他角色",
+        filterTarget: lib.filter.notMe,
+        content() {
+            const cards = player.countCards("h");
+            "step 0";
+            player.discard(player.getCards("h"));
+            "step 1";
+            target.chooseToDiscard(cards + 1, "he")
         }
     }
 };

@@ -44,6 +44,12 @@ const characters = {
         hp: 3,
         maxHp: 4,
         skills: ["chuangshi", "bengkui"]
+    },
+    warden: {
+        sex: "none",
+        group: "qun",
+        hp: 8,
+        skills: ["jianxiao"]
     }
 };
 
