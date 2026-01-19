@@ -1259,11 +1259,17 @@ const skills = {
         prompt: "弃置所有手牌并选择一名其他角色",
         filterTarget: lib.filter.notMe,
         content() {
-            const cards = player.countCards("h");
             "step 0";
+            const cards = player.countCards("h");
             player.discard(player.getCards("h"));
             "step 1";
-            target.chooseToDiscard(cards + 1, "he")
+            const result = target
+                .chooseToDiscard(cards + 1, "he", `弃置${get.cnNumber(cards + 1)}张牌或受到2点伤害`)
+                .forResult();
+            "step 2";
+            if (!result.bool) {
+                target.damage(2);
+            }
         }
     }
 };

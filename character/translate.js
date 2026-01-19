@@ -10,6 +10,7 @@ const translates = {
     cavespider: "洞穴蜘蛛",
     allay: "悦灵",
     steve: "史蒂夫",
+    warden: "监守者",
 
     poison: "中毒",
     fenlie: "分裂",
