@@ -648,7 +648,7 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
-                prompt: "选择一名角色，对其造成一点伤害并赋予其中毒I",
+                prompt: "选择一名其他角色，对其造成一点伤害并赋予其中毒I",
                 filterTarget: lib.filter.notMe,
                 content() {
                     "step 0";
@@ -1246,6 +1246,20 @@ const skills = {
                     }
                 }
             }
+        }
+    },
+
+    jianxiao: {
+        usable: 1,
+        enable: "phaseUse",
+        prompt: "弃置所有手牌并选择一名其他角色",
+        filterTarget: lib.filter.notMe,
+        content() {
+            const cards = player.countCards("h");
+            "step 0";
+            player.discard(player.getCards("h"));
+            "step 1";
+            target.chooseToDiscard(cards + 1, "he")
         }
     }
 };
