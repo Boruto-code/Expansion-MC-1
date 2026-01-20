@@ -1264,7 +1264,7 @@ const skills = {
             player.discard(player.getCards("h"));
             "step 1";
             const result = target
-                .chooseToDiscard(cards + 1, "he", `弃置${get.cnNumber(cards + 1)}张牌或受到2点伤害`)
+                .chooseToDiscard("he", `弃置${get.cnNumber(cards + 1)}张牌或受到2点伤害`, cards + 1)
                 .set("ai", function(card) {
                     if (get.type(card) != "basic") {
                         return 10 - get.value(card);
