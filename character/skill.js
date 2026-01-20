@@ -1265,6 +1265,12 @@ const skills = {
             "step 1";
             const result = target
                 .chooseToDiscard(cards + 1, "he", `弃置${get.cnNumber(cards + 1)}张牌或受到2点伤害`)
+                .set("ai", function(card) {
+                    if (get.type(card) != "basic") {
+                        return 10 - get.value(card);
+                    }
+                    return 8 - get.value(card);
+                })
                 .forResult();
             "step 2";
             if (!result.bool) {
