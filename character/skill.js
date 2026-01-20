@@ -459,7 +459,7 @@ const skills = {
             "step 1";
             player.judge(function(card) {
                 if (get.color(card) == "red") {
-                    player.addAdditionalSkill("yuanji");
+                    player.addSkill("yuanji");
                     player.disableEquip(1);
                 }
             })
@@ -1269,6 +1269,47 @@ const skills = {
             "step 2";
             if (!result.bool) {
                 target.damage(2);
+            }
+        }
+    },
+    huixiang: {
+        usable: 1,
+        enable: "phaseUse",
+        async content(event, trigger, player) {
+            const players = game.filterPlayer(function(current) {
+                return current.countCards("h") > 0;
+            });
+            let numbers = [];
+            let maxs = 0, max = 0, min = 14;
+            let maxplayer, minplayers = [];
+                
+            for (let target of players) {
+                const result = await target.chooseToDiscard(1, true).forResult();
+                numbers.push(result.cards);
+                if (get.number(result.cards) == max || maxs == 0) {
+                    maxs++;
+                }
+                if (get.number(result.cards) > max) {
+                    max = get.number(result.cards);
+                    maxplayer = target;
+                }
+                if (get.number(result.cards) < min) {
+                    min = get.number(result.cards);
+                }
+            }
+
+            if (maxs == 1) {
+                for (let target of players) {
+                    if (target != maxplayer) {
+                        await target.damage(maxplayer);
+                    }
+                }
+            } else {
+                for (let i = 0; i < players.length; i++) {
+                    if (numbers[i] > min) {
+                        await players[i].chooseToDiscard(2, true);
+                    }
+                }
             }
         }
     }
