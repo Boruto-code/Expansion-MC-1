@@ -1312,6 +1312,26 @@ const skills = {
                 }
             }
         }
+    },
+    heian: {
+        forced: true,
+        frequent: true,
+        trigger: {
+            player: "useCardAfter"
+        },
+        async content(event, trigger, player) {
+            await player.chooseToDiscard(1, true);
+        },
+        mod: {
+            maxHandcardBase(player, num) {
+                return num - 5;
+            },
+            cardEnabled(card, player) {
+                if (get.type(card) == "equip") {
+                    return false;
+                }
+            }
+        }
     }
 };
 
