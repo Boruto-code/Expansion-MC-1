@@ -1218,7 +1218,7 @@ const skills = {
                 }
             }
             await player.changeGroup("shen");
-            await player.changeSkin("bengkui", "steve_infinity");
+            player.changeSkin("bengkui", "steve_infinity");
             await player.addSkill("bengkui_effect");
             player.storage.bengkui = true;
         },
@@ -1258,12 +1258,13 @@ const skills = {
         enable: "phaseUse",
         prompt: "弃置所有手牌并选择一名其他角色",
         filterTarget: lib.filter.notMe,
-        content() {
-            "step 0";
+        filter(event, player) {
+            return player.countCards("h") > 0;
+        },
+        async content(event, trigger, player) {
             const cards = player.countCards("h");
-            player.discard(player.getCards("h"));
-            "step 1";
-            const result = target
+            await player.discard(player.getCards("h"));
+            const result = await event.target
                 .chooseToDiscard("he", `弃置${get.cnNumber(cards + 1)}张牌或受到2点伤害`, cards + 1)
                 .set("ai", function(card) {
                     if (get.type(card) != "basic") {
@@ -1272,9 +1273,9 @@ const skills = {
                     return 8 - get.value(card);
                 })
                 .forResult();
-            "step 2";
+            "step 3";
             if (!result.bool) {
-                target.damage(2);
+                await event.target.damage(2);
             }
         }
     },
@@ -1290,8 +1291,13 @@ const skills = {
             let maxplayer, minplayers = [];
                 
             for (let target of players) {
-                const result = await target.chooseToDiscard(1, true).forResult();
-                numbers.push(result.cards);
+                const result = await target
+                    .chooseToDiscard(1, true)
+                    .set("ai", function(card) {
+                        return get.number(card) + (10 - get.value(card));
+                    })
+                    .forResult();
+                numbers.push(get.number(result.cards));
                 if (get.number(result.cards) == max || maxs == 0) {
                     maxs++;
                 }
