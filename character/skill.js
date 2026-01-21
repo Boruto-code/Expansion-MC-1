@@ -446,7 +446,7 @@ const skills = {
         trigger: {
             player: "phaseZhunbeiBegin"
         },
-        derivation: "yuanji",
+        derivation: "mcyuanji",
         init(player) {
             player.storage.jianji = false;
         },
@@ -459,13 +459,13 @@ const skills = {
             "step 1";
             player.judge(function(card) {
                 if (get.color(card) == "red") {
-                    player.addSkill("yuanji");
+                    player.addSkill("mcyuanji");
                     player.disableEquip(1);
                 }
             })
         }
     },
-    yuanji: {
+    mcyuanji: {
         forced: true,
         frequent: true,
         trigger: {
@@ -1316,6 +1316,13 @@ const skills = {
                         await target.damage(maxplayer);
                     }
                 }
+
+                const result = await player
+                    .chooseTarget(1, false, "选择一名没赢的其他角色", (card, player, target) => {
+                        return target != player && target != maxplayer;
+                    })
+                    .forResult();
+                await result.targets[0].addTempSkill("heian", { player: "phaseEnd" });
             } else {
                 for (let i = 0; i < players.length; i++) {
                     if (numbers[i] > min) {
@@ -1330,6 +1337,9 @@ const skills = {
         frequent: true,
         trigger: {
             player: "useCardAfter"
+        },
+        filter(event, player) {
+            return player.isPhaseUsing();
         },
         async content(event, trigger, player) {
             await player.chooseToDiscard(1, true);
