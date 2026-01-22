@@ -1318,11 +1318,14 @@ const skills = {
                 }
 
                 const result = await player
-                    .chooseTarget(1, false, "选择一名没赢的其他角色", (card, player, target) => {
+                    .chooseTarget(1, false, "选择一名没赢的其他角色赋予黑暗", (card, player, target) => {
                         return target != player && target != maxplayer;
                     })
                     .forResult();
-                await result.targets[0].addTempSkill("heian", { player: "phaseEnd" });
+
+                if (result.bool) {
+                    await result.targets[0].addTempSkill("heian", { player: "phaseEnd" });
+                }
             } else {
                 for (let i = 0; i < players.length; i++) {
                     if (numbers[i] > min) {
@@ -1333,6 +1336,7 @@ const skills = {
         }
     },
     heian: {
+        persevereSkill: true,
         forced: true,
         frequent: true,
         trigger: {
