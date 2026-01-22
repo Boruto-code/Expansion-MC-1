@@ -1277,6 +1277,15 @@ const skills = {
             if (!result.bool) {
                 await event.target.damage(2);
             }
+        },
+        check(event, player) {
+            let enemies = game.countPlayer(function(current) {
+                return get.attitude(player, current) < 0 && current.countCards("h") > 0;
+            });
+            if (enemies < 1) {
+                return false;
+            }
+            return true;
         }
     },
     huixiang: {
@@ -1333,6 +1342,16 @@ const skills = {
                     }
                 }
             }
+        },
+        ai: {
+            damage: true,
+            result: {
+                target(player, target) {
+                    return get.damageEffect(target, player);
+                }
+            },
+            threaten: 1.6,
+            expose: 0.4
         }
     },
     heian: {
