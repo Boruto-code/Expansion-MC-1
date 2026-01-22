@@ -1294,7 +1294,7 @@ const skills = {
                 const result = await target
                     .chooseToDiscard(1, true)
                     .set("ai", function(card) {
-                        return get.number(card) + (10 - get.value(card));
+                        return get.number(card) + (10 - get.value(card)) * 0.2;
                     })
                     .forResult();
                 numbers.push(get.number(result.cards));
@@ -1319,7 +1319,7 @@ const skills = {
 
                 const result = await player
                     .chooseTarget(1, false, "选择一名没赢的其他角色赋予黑暗", (card, player, target) => {
-                        return target != player && target != maxplayer;
+                        return target != player && target != maxplayer && players.indexOf(target) != -1;
                     })
                     .forResult();
 
