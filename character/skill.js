@@ -606,10 +606,19 @@ const skills = {
             player: "phaseEnd"
         },
         async content(event, trigger, player) {
-            const result = 
-                await player.chooseControl("与上家交换座次", "与下家交换座次", "自爆！",).forResultControl();
+            let result;
+            if (player.getSeatNum() == 1) {
+                result = await player
+                    .chooseControl("与下家交换座次", "自爆！").forResult();
+            } else if (player.getNext().getSeatNum() == 1) {
+                result = await player
+                    .chooseControl("与上家交换座次", "自爆！").forResult();
+            } else {
+                result = await player
+                    .chooseControl("与上家交换座次", "与下家交换座次", "自爆！").forResult();
+            }
 
-            if (result == "与上家交换座次") {
+            if (result.control == "与上家交换座次") {
                 const preplayer = player.getPrevious();
 
                 game.broadcastAll(function(target1, target2) {
@@ -617,7 +626,7 @@ const skills = {
                 }, player, player.getPrevious());
 
                 preplayer.turnOver();
-            } else if (result == "与下家交换座次") {
+            } else if (result.control == "与下家交换座次") {
                 const nextplayer = player.getNext();
 
                 game.broadcastAll(function(target1, target2) {
