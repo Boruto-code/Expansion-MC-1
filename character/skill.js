@@ -627,7 +627,7 @@ const skills = {
                 nextplayer.insertPhase();
             } else {
                 const targets = game.filterPlayer(function(current) {
-                    return current != player && get.distance(current, player) <= 1;
+                    return current != player && get.distance(player, current) <= 1;
                 });
 
                 for (let i = 0; i < targets.length; i++) {
