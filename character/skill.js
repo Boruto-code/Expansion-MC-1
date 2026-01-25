@@ -190,15 +190,13 @@ const skills = {
                     player.judge(function(card) {
                         const suit = get.suit(card);
                         if (suit == "club") {
-                            trigger.getParent().baseDamage += Math.floor(trigger.target.maxHp / 2);
+                            trigger.getParent().baseDamage++;
                         } else if (suit == "spade") {
                             trigger.target.turnOver();
                         } else if (suit == "heart") {
-                            trigger.target.recoverTo(trigger.target.maxHp);
-                            trigger.target.draw(3);
+                            trigger.getParent().baseDamage += Math.floor(trigger.target.maxHp / 2);
                         } else {
-                            player.loseHp();
-                            player.chooseToDiscard(3, true);
+                            player.discardPlayerCard("he", trigger.target, true);
                         }
                     });
                     "step 1";
