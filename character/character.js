@@ -56,7 +56,8 @@ const characters = {
         group: "lve",
         hp: 4,
         skills: []
-    }
+    },
+    //TODO: Copy noname.full.zip
 };
 
 for (let i in characters) {
