@@ -5,6 +5,4 @@ export function content(config, pack) {
     for (let i in characterSubstitutes) {
         lib.characterSubstitute[i] = characterSubstitutes[i];
     }
-
-    // lib.characterSubstitute = { ...characterSubstitutes };
 }

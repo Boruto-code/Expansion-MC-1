@@ -50,6 +50,12 @@ const characters = {
         group: "qun",
         hp: 8,
         skills: ["jianxiao", "huixiang", "heian"]
+    },
+    pillager: {
+        sex: "male",
+        group: "lve",
+        hp: 4,
+        skills: []
     }
 };
 
