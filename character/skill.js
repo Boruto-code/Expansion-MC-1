@@ -221,7 +221,7 @@ const skills = {
             player: "phaseBegin"
         },
         async content(event, trigger, player) {
-            player.changeZhuanhuanji("riye");
+            await player.changeZhuanhuanji("riye");
 
             if (player.storage.riye) {
                 const result = 
@@ -234,9 +234,9 @@ const skills = {
                     }).set("prompt", "日：失去一点体力或弃置两张牌").forResult();
 
                 if (result.control == "失去一点体力") {
-                    player.loseHp();
+                    await player.loseHp();
                 } else {
-                    player.chooseToDiscard(2, true);
+                    await player.chooseToDiscard(2, true);
                 }
             } else {
                 const result = 
@@ -249,9 +249,9 @@ const skills = {
                     }).set("prompt", "夜：回复一点体力或摸两张牌").forResult();
 
                 if (result.control == "回复一点体力") {
-                    player.recover();
+                    await player.recover();
                 } else {
-                    player.draw(2);
+                    await player.draw(2);
                 }
             }
         }
@@ -1385,6 +1385,91 @@ const skills = {
                     return false;
                 }
             }
+        }
+    },
+
+    jingnu: {
+        forced: true,
+        mod: {
+            targetInRange(card) {
+                if (card.name == "sha") {
+                    return true;
+                }
+            }
+        }
+    },
+    lveduo: {
+        group: ["lveduo_1", "lveduo_2"],
+        subSkill: {
+            1: {
+                enable: "chooseToUse",
+                filterCard(card) {
+                    return get.color(card) == "black";
+                },
+                position: "hes",
+                viewAs: { name: "shunshou" },
+                viewAsFilter(player) {
+                    if (!player.countCards("hes", { color: "black" })) {
+                        return false;
+                    }
+                },
+                prompt: "将一张黑色牌当顺手牵羊使用",
+                check(card) {
+                    return 6 - get.value(card);
+                },
+                mod: {
+                    targetInRange(card) {
+                        if (card.name == "shunshou") {
+                            return true;
+                        }
+                    }
+                }
+            },
+            2: {
+                trigger: {
+                    player: "damageEnd"
+                },
+                filter(event, player) {
+                    return event.num > 0;
+                },
+                getIndex(event, player) {
+                    return event.num;
+                },
+                async content(event, trigger, player) {
+                    await player.chooseUseTarget("shunshou");
+                }
+            }
+        }
+    },
+    jielve: {
+        zhuSkill: true,
+        limited: true,
+        unique: true,
+        mark: true,
+        trigger: {
+            player: "dying"
+        },
+        filter(event, player) {
+            return player.hasZhuSkill("jielve");
+        },
+        content(event, trigger, player) {
+            "step 0";
+            player.awakenSkill("jielve");
+            player.recoverTo(player.maxHp);
+            "step 1";
+            player.addSkill("lveduo_upgrade");
+        }
+    },
+    lveduo_upgrade: {
+        usable(skill, player) {
+            return game.countPlayer(current => {
+                return current.group == "lve";
+            });
+        },
+        prompt: "选择一名其他角色",
+        filterTarget: lib.filter.notMe,
+        content(event, trigger, player) {
+            player.gainPlayerCard(target, true, "he", target.countCards("h"));
         }
     }
 };

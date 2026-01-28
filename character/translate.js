@@ -2,6 +2,7 @@ const translates = {
     mc1: "MC-1",
 
     wang: "亡",
+    lve: "掠",
 
     slime: "史莱姆",
     skeleton: "骷髅",
@@ -11,6 +12,7 @@ const translates = {
     allay: "悦灵",
     steve: "史蒂夫",
     warden: "监守者",
+    pillager: "掠夺者",
 
     poison: "中毒",
     fenlie: "分裂",
@@ -85,7 +87,15 @@ const translates = {
     huixiang: "回响",
     huixiang_info: "出牌阶段限一次，你可以进行一次回音：若结果为“啸”，赢的角色对所有没赢的角色造成一点伤害，然后你可以赋予一名没赢的其他角色黑暗；若结果为“响”，所有没赢的角色弃置两张手牌（不足则全弃）。",
     heian: "黑暗",
-    heian_info: "持恒技，锁定技，你于出牌阶段使用的牌结算后，你须弃置一张牌；你的手牌上限-5且不能使用装备牌。"
+    heian_info: "持恒技，锁定技，你于出牌阶段使用的牌结算后，你须弃置一张牌；你的手牌上限-5且不能使用装备牌。",
+    jingnu: "劲弩",
+    jingnu_info: "锁定技，你使用的【杀】无距离限制。",
+    lveduo: "掠夺",
+    lveduo_info: "你可以将一张黑色牌当【顺手牵羊】使用；你受到一点伤害后，可以视为使用一张【顺手牵羊】；你使用的【顺手牵羊】无距离限制。",
+    jielve: "劫掠",
+    jielve_info: "主公技，限定技，你进入濒死状态时，可以将体力回复至体力上限，然后你升级“掠夺”。",
+    lveduo_upgrade: "掠夺",
+    lveduo_upgrade_info: "出牌阶段限X次（X为场上掠势力角色数），你可以获得一名角色的所有牌。"
 };
 
 export default translates;
