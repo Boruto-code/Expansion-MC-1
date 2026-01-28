@@ -1295,6 +1295,11 @@ const skills = {
                 return false;
             }
             return true;
+        },
+        ai: {
+            damage: true,
+            threaten: 2.2,
+            expose: 0.6
         }
     },
     huixiang: {
@@ -1359,8 +1364,7 @@ const skills = {
                     return get.damageEffect(target, player);
                 }
             },
-            threaten: 1.6,
-            expose: 0.4
+            threaten: 1.6
         }
     },
     heian: {
