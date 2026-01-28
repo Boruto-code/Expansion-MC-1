@@ -1461,6 +1461,7 @@ const skills = {
             player.awakenSkill("jielve");
             player.recoverTo(player.maxHp);
             "step 1";
+            player.removeSkill("lveduo");
             player.addSkill("lveduo_upgrade");
         }
     },
