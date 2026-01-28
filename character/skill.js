@@ -1475,7 +1475,7 @@ const skills = {
         prompt: "选择一名其他角色",
         filterTarget: lib.filter.notMe,
         content(event, trigger, player) {
-            player.gainPlayerCard(target, true, "he", target.countCards("h"));
+            player.gainPlayerCard(target, true, "he", target.countCards("he"));
         }
     }
 };
