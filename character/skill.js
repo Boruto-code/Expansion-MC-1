@@ -1471,6 +1471,7 @@ const skills = {
                 return current.group == "lve";
             });
         },
+        enable: "phaseUse",
         prompt: "选择一名其他角色",
         filterTarget: lib.filter.notMe,
         content(event, trigger, player) {

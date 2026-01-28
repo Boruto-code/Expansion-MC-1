@@ -57,8 +57,7 @@ const characters = {
         hp: 4,
         skills: ["jingnu", "lveduo", "jielve"],
         isZhugong: true
-    },
-    //TODO: Copy noname.full.zip
+    }
 };
 
 for (let i in characters) {
