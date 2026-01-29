@@ -1,6 +1,6 @@
 const characterSort = {
     mc1_wang: ["zombie", "skeleton", "creeper", "slime", "cavespider"],
-    mc1_lve: ["allay"],
+    mc1_lve: ["allay", "pillager"],
     mc1_shen: ["steve", "warden"]
 };
 

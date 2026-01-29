@@ -57,6 +57,13 @@ const characters = {
         hp: 4,
         skills: ["jingnu", "lveduo", "jielve"],
         isZhugong: true
+    },
+    witch: {
+        sex: "female",
+        group: "qun",
+        hp: 4,
+        skills: [],
+        doubleGroup: ["qun", "lve"]
     }
 };
 
