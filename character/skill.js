@@ -1459,6 +1459,7 @@ const skills = {
         content(event, trigger, player) {
             "step 0";
             player.awakenSkill("jielve");
+            player.loseMaxHp();
             player.recoverTo(player.maxHp);
             "step 1";
             player.removeSkill("lveduo");
