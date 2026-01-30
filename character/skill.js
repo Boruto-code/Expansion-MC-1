@@ -28,7 +28,8 @@ const skills = {
         mark: true,
         marktext: "迅",
         intro: {
-            name: "迅捷"
+            name: "迅捷",
+            content: "本回合与其他角色的距离-1"
         },
         mod: {
             globalFrom(from, to, distance) {
@@ -40,10 +41,14 @@ const skills = {
         mark: true,
         marktext: "虚",
         intro: {
-            name: "虚弱"
+            name: "虚弱",
+            content: "直到回合结束时使用【杀】造成的伤害-1"
         },
         forced: true,
         trigger: { source: "damageBegin" },
+        filter(event, player) {
+            return event.card.name == "sha";
+        },
         content(event, trigger, player) {
             trigger.num--;
         }
@@ -52,7 +57,8 @@ const skills = {
         mark: true,
         marktext: "缓",
         intro: {
-            name: "缓慢"
+            name: "缓慢",
+            content: "直到回合结束时与其他角色的距离+1"
         },
         mod: {
             globalFrom(from, to, distance) {
@@ -1424,6 +1430,9 @@ const skills = {
                     return false;
                 }
             }
+        },
+        ai: {
+            neg: true
         }
     },
 
@@ -1578,12 +1587,12 @@ const skills = {
                 },
                 async content(event, trigger, player) {
                     const { control } = await player
-                        .chooseControl("掠夺", "中毒", "迟缓", "治疗", "迅捷")
+                        .chooseControl("掠夺", "伤害", "迟缓", "治疗", "迅捷")
                         .forResult();
 
                     if (control == "掠夺") {
                         await player.chooseUseTarget("shunshou");
-                    } else if (control == "中毒") {
+                    } else if (control == "伤害") {
                         const { targets } = await player
                             .chooseTarget(1, true, "选择一名其他角色造成一点伤害", function(card, player, target) {
                                 return player != target;
