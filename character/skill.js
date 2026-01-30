@@ -1532,6 +1532,9 @@ const skills = {
         groupSkill: "qun",
         usable: 1,
         enable: "phaseUse",
+        filter(event, player) {
+            return player.group == "qun";
+        },
         async content(event, trigger, player) {
             const { control } = await player
                 .chooseControl("变更势力", "中毒", "虚弱", "治疗", "迅捷")
@@ -1570,6 +1573,9 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
+                filter(event, player) {
+                    return player.group == "lve";
+                },
                 async content(event, trigger, player) {
                     const { control } = await player
                         .chooseControl("掠夺", "中毒", "迟缓", "治疗", "迅捷")
@@ -1608,6 +1614,9 @@ const skills = {
                 forced: true,
                 trigger: {
                     global: "dieAfter"
+                },
+                filter(event, player) {
+                    return player.group == "lve";
                 },
                 content(event, trigger, player) {
                     player.changeGroup("qun");
