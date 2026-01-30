@@ -3,6 +3,8 @@ const translates = {
 
     wang: "亡",
     lve: "掠",
+    group_wang: "亡势力",
+    group_lve: "掠势力",
 
     slime: "史莱姆",
     skeleton: "骷髅",
@@ -13,8 +15,11 @@ const translates = {
     steve: "史蒂夫",
     warden: "监守者",
     pillager: "掠夺者",
+    witch: "女巫",
 
     poison: "中毒",
+    speed: "迅捷",
+    weakness: "虚弱",
     fenlie: "分裂",
     fenlie_info: "当你受到伤害后，你可以将一张手牌置于武将牌上，称为“裂”，然后你减少一点体力上限并将体力回复至体力上限。",
     ronghe: "融合",
@@ -95,7 +100,13 @@ const translates = {
     jielve: "劫掠",
     jielve_info: "主公技，限定技，你进入濒死状态时，可以减一点体力上限并将体力回复至体力上限，然后你升级“掠夺”。",
     lveduo_upgrade: "掠夺",
-    lveduo_upgrade_info: "出牌阶段限X次（X为场上掠势力角色数），你可以获得一名角色的所有牌。"
+    lveduo_upgrade_info: "出牌阶段限X次（X为场上掠势力角色数），你可以获得一名角色的所有牌。",
+    zhimo: "制魔",
+    zhimo_info: "锁定技，你受到属性伤害或失去体力时，防止之。",
+    niangzao: "酿造",
+    niangzao_info: "群势力技，出牌阶段限一次，你可以执行一项：1.变更势力至掠；2.赋予一名其他角色中毒I；3.赋予一名其他角色虚弱；4.回复一点体力；5.本回合与其他角色的距离-1。",
+    zhiyao: "制药",
+    zhiyao_info: "掠势力技，出牌阶段限一次，你可以执行一项：1.视为使用一张【顺手牵羊】；2.对一名其他角色造成一点伤害；3.赋予一名其他角色迟缓；4.选择一名角色回复一点体力；5.本回合与其他角色的距离-1。一名角色死亡后，你变更势力至群。"
 };
 
 export default translates;

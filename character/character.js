@@ -62,7 +62,7 @@ const characters = {
         sex: "female",
         group: "qun",
         hp: 4,
-        skills: [],
+        skills: ["zhimo", "niangzao", "zhiyao"],
         doubleGroup: ["qun", "lve"]
     }
 };

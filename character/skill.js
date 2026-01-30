@@ -10,7 +10,6 @@ const skills = {
             content: "拥有“毒”标记的角色回合开始时，失去一点体力（若体力为1，则不执行）并移去1枚“毒”标记。",
         },
         forced: true,
-        frequent: true,
         popup: false,
         trigger: {
             player: "phaseBegin"
@@ -24,6 +23,42 @@ const skills = {
                 player.removeSkill("poison");
             }
         },
+    },
+    speed: {
+        mark: true,
+        marktext: "迅",
+        intro: {
+            name: "迅捷"
+        },
+        mod: {
+            globalFrom(from, to, distance) {
+                return distance - 1;
+            }
+        }
+    },
+    weakness: {
+        mark: true,
+        marktext: "虚",
+        intro: {
+            name: "虚弱"
+        },
+        forced: true,
+        trigger: { source: "damageBegin" },
+        content(event, trigger, player) {
+            trigger.num--;
+        }
+    },
+    slowness: {
+        mark: true,
+        marktext: "缓",
+        intro: {
+            name: "缓慢"
+        },
+        mod: {
+            globalFrom(from, to, distance) {
+                return distance + 1;
+            }
+        }
     },
 
     fenlie: {
@@ -1477,6 +1512,107 @@ const skills = {
         filterTarget: lib.filter.notMe,
         content(event, trigger, player) {
             player.gainPlayerCard(target, true, "he", target.countCards("he"));
+        }
+    },
+
+    zhimo: {
+        forced: true,
+        trigger: {
+            player: "loseHp",
+            player: "damageBegin4"
+        },
+        filter(event, player) {
+            return event.name == "loseHp" || event.hasNature();
+        },
+        content(event, trigger, player) {
+            trigger.cancel();
+        }
+    },
+    niangzao: {
+        groupSkill: "qun",
+        usable: 1,
+        enable: "phaseUse",
+        async content(event, trigger, player) {
+            const { control } = await player
+                .chooseControl("变更势力", "中毒", "虚弱", "治疗", "迅捷")
+                .forResult();
+
+            if (control == "变更势力") {
+                await player.changeGroup("lve");
+            } else if (control == "中毒") {
+                const { targets } = await player
+                    .chooseTarget(1, true, "选择一名其他角色，赋予其中毒I", function(card, player, target) {
+                        return player != target;
+                    })
+                    .forResult();
+
+                await targets[0].addMark("poison");
+                await targets[0].addSkill("poison");
+            } else if (control == "虚弱") {
+                const { targets } = await player
+                    .chooseTarget(1, true, "选择一名其他角色，赋予其虚弱", function(card, player, target) {
+                        return player != target;
+                    })
+                    .forResult();
+
+                await targets[0].addTempSkill("weakness", { player: "phaseEnd" });
+            } else if (control == "治疗") {
+                await player.recover();
+            } else {
+                await player.addTempSkill("speed");
+            }
+        }
+    },
+    zhiyao: {
+        groupSkill: "lve",
+        group: ["zhiyao_1", "zhiyao_2"],
+        subSkill: {
+            1: {
+                usable: 1,
+                enable: "phaseUse",
+                async content(event, trigger, player) {
+                    const { control } = await player
+                        .chooseControl("掠夺", "中毒", "迟缓", "治疗", "迅捷")
+                        .forResult();
+
+                    if (control == "掠夺") {
+                        await player.chooseUseTarget("shunshou");
+                    } else if (control == "中毒") {
+                        const { targets } = await player
+                            .chooseTarget(1, true, "选择一名其他角色造成一点伤害", function(card, player, target) {
+                                return player != target;
+                            })
+                            .forResult();
+
+                        await targets[0].damage();
+                    } else if (control == "迟缓") {
+                        const { targets } = await player
+                            .chooseTarget(1, true, "选择一名其他角色，赋予其缓慢", function(card, player, target) {
+                                return player != target;
+                            })
+                            .forResult();
+
+                        await targets[0].addTempSkill("slowness", { player: "phaseEnd" });
+                    } else if (control == "治疗") {
+                        const { targets } = await player
+                            .chooseTarget(1, true, "选择一名角色回复一点体力")
+                            .forResult();
+
+                        await targets[0].recover();
+                    } else {
+                        await player.addTempSkill("speed");
+                    }
+                }
+            },
+            2: {
+                forced: true,
+                trigger: {
+                    global: "dieAfter"
+                },
+                content(event, trigger, player) {
+                    player.changeGroup("qun");
+                }
+            }
         }
     }
 };
