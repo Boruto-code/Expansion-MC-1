@@ -306,13 +306,23 @@ const skills = {
             }
         }
     },
+    aozhan: {
+        enable: "phaseUse",
+        filterTarget(card, player, target) {
+            return player.canCompare(target);
+        },
+        filter(event, player) {
+            return player.countCards("h") > 0;
+        },
+        async content(event, trigger, player) {
+            
+        }
+    },
     tongdi: {
         trigger: {
             source: "damageEnd",
             player: "damageEnd"
         },
-        forced: true,
-        frequent: true,
         content(event, trigger, player) {
             "step 0";
             player.draw(trigger.num);
@@ -349,8 +359,6 @@ const skills = {
             source: "damageEnd",
             player: "damageEnd"
         },
-        forced: true,
-        frequent: true,
         content(event, trigger, player) {
             "step 0";
             player.draw(3);
@@ -455,7 +463,6 @@ const skills = {
         marktext: "☯",
         zhuanhuanji: true,
         forced: true,
-        frequent: true,
         intro: {
             content(storage, player, skill) {
                 return `回合开始时，你选择一项：1.回复一点体力；2.${storage ? "摸两张牌" : "摸一张牌"}。`;
@@ -537,7 +544,6 @@ const skills = {
         marktext: "☯",
         zhuanhuanji: true,
         forced: true,
-        frequent: true,
         intro: {
             content(storage, player, skill) {
                 return `回合结束时，${storage ? "你摸三张牌" : "所有角色弃置两张牌"}。`;
