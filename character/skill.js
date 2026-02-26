@@ -723,63 +723,29 @@ const skills = {
                     const target = event.target;
                     player.addTempSkill("tongxin_used", "phaseUseAfter");
 
-                    const give = player.chooseCard("h", "交给目标一张手牌", true).forResult();
+                    const give = (await player.chooseCard("h", "交给目标一张手牌", true).forResult()).cards[0];
                     await player.give(give, target, false);
 
                     const result = await player.chooseControl("类型", "牌名", "颜色", "花色", "点数").forResult();
                     if (result.control == "类型") {
-                        player
+                        await player.gain(get.discardPile(card => get.type(card) == get.type(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.type(card) == get.type(give)), "gain2");
+                    } else if (result.control == "牌名") {
+                        await player.gain(get.discardPile(card => get.name(card) == get.name(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.name(card) == get.name(give)), "gain2");
+                    } else if (result.control == "颜色") {
+                        await player.gain(get.discardPile(card => get.color(card) == get.color(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.color(card) == get.color(give)), "gain2");
+                    } else if (result.control == "花色") {
+                        await player.gain(get.discardPile(card => get.suit(card) == get.suit(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.suit(card) == get.suit(give)), "gain2");
+                    } else {
+                        await player.gain(get.discardPile(card => get.number(card) == get.number(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.number(card) == get.number(give)), "gain2");
                     }
                 }
             },
             used: { charlotte: true }
-        }
-    },
-    tongxin_edit: {
-        enable: "phaseUse",
-        filter(event, player) {
-            return player.countCards("h") > 0;
-        },
-        filterTarget(card, player, target) {
-            return player != target && target.hasCard();
-        },
-        async content(event, trigger, player) {
-            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
-
-            if (result?.bool && result?.cards?.length) {
-                const { cards } = result;
-                await event.target.showCards(cards);
-                const [card] = cards;
-                for (let i = 0; i < 5; i++) {
-                    await player.gain(get.discardPile(true));
-                }
-
-                const give = player.chooseCard("h", "交给目标一张手牌", true).forResult();
-                const count = 
-                    Number(get.type(card) == get.type(give.cards[0])) 
-                    + Number(get.name(card) == get.name(give.cards[0])) 
-                    + Number(get.number(card) == get.number(give.cards[0])) 
-                    + Number(get.suit(card) == get.suit(give.cards[0]));
-                await player.give(give2.cards, event.target);
-
-                if (count == 0) {
-                    player.chooseToDiscard(true, "h", player.countCards("h"));
-                    player.tempBanSkill("tongxin");
-                } else if (count == 1) {
-                    player.draw();
-                    player.tempBanSkill("tongxin");
-                } else if (count == 2) {
-                    player.draw(2);
-                    player.tempBanSkill("tongxin");
-                } else if (count == 3) {
-                    player.draw(3);
-                } else {
-                    player.draw(4);
-                }
-
-                const give2 = player.chooseCard("h", "交给目标一张手牌").forResult();
-                await player.give(give2.cards, event.target);
-            }
         }
     },
 
