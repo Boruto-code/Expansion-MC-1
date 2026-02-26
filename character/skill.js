@@ -69,119 +69,57 @@ const skills = {
 
     fenlie: {
         trigger: {
-            player: "damageEnd"
+            player: "dying"
         },
-        filter(event, player) {
-            return player.maxHp > 1 && player.countCards("h") > 0;
-        },
-        async content(event, trigger, player) {
-            const result = await player.chooseCard("h", "选择一张牌作为“裂”").forResult();
-            if (result.bool){
-                await player.addToExpansion(result.cards, player, "giveAuto").gaintag.add("fenlie");
-                await player.loseMaxHp();
-                await player.recoverTo(player.maxHp);
-            }
+        forced: true,
+        content(event, trigger, player) {
+            "step 0";
+            player.loseMaxHp();
+            player.recoverTo(player.maxHp);
+            "step 1";
+            player.addMark("fenlie", 1);
+            player.draw(player.countMark("fenlie") - player.countCards("h"));
         },
         marktext: "裂",
         intro: {
-            content: "expansion",
-            markcount: "expansion",
-        },
-        onremove(player, skill) {
-            const cards = player.getExpansions(skill);
-            if (cards.length) {
-                player.loseToDiscardpile(cards);
-            }
+            content: "当前有#个标记"
         },
         ai: {
             maixie: true
         }
     },
-    ronghe: {
-        enable: "phaseUse",
-        usable: 1,
-        filter(event, player) {
-            return player.countExpansions("fenlie") > 0;
-        },
-        async content(event, trigger, player) {
-            const result = await player
-                    .chooseCardButton(player.getExpansions("fenlie"), 1, "选择收回一张“裂”", true)
-                    .forResultLinks();
-
-            await player.gain(result);
-            await player.gainMaxHp();
-            await player.recover();
-        },
-    },
-    liexi: {
-        trigger: {
-            player: "useCardToPlayered"
-        },
+    weigong: {
         forced: true,
-        frequent: true,
-        filter(event, player) {
-            return event.card.name == "sha";
+        trigger: {
+            player: "loseAfter"
         },
-        content(event, trigger, player) {
-            if (player.countExpansions("fenlie") >= 3){
-                trigger.getParent().directHit.add(trigger.target);
-            }
+        filter(event, player) {
+            return player.countCards("h") < player.countMark("fenlie");
+        },
+        content() {
+            let num = player.countMark("fenlie") - player.countCards("h");
+            player.draw(num);
         },
         mod: {
             cardUsable(card, player, num) {
-                if (card.name == "sha") {
-                    return 2 ** player.countExpansions("fenlie");
-                }
-            },
-            maxHandcardBase(player, num) {
-                return 4;
-            }
-        }
-    },
-    weigong: {
-        usable: 1,
-        trigger: {
-            player: "useCardToPlayered"
-        },
-        filter(event, player) {
-            return event.card.name == "sha" && player.countExpansions("fenlie") > 0;
-        },
-        logTarget: "target",
-        content(event, trigger, player) {
-            "step 0";
-            for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
-                player.discardPlayerCard(trigger.target, "h", true);
-            }
-            "step 1";
-            for (let i = 1; i <= player.countExpansions("fenlie"); i++) {
-                player.judge(function(card) {
-                    if (get.color(card) == "red") {
-                        trigger.target.loseHp(1);
-                    }
-                    else {
-                        player.discardPlayerCard(trigger.target, "he", true);
-                    }
-                });
-            }
-            "step 2";
-            game.delayx();
+				if (card.name == "sha") {
+					return 2 ** player.countMark("fenlie");
+				}
+			}
         }
     },
 
-    jinggong: {
+    feishi: {
         trigger: {
             player: "useCardToPlayered"
         },
         forced: true,
-        frequent: true,
         filter(event, player) {
-            return event.card.name == "sha";
+            return event.card.name == "sha" && event.target.hp <= event.target.maxHp / 2;
         },
         logTarget: "target",
-        content(event, trigger, player) {
-            if (trigger.target.hp <= Math.floor(trigger.target.maxHp / 2)) {
-                trigger.getParent().directHit.add(trigger.target);
-            }
+        async content(event, trigger, player) {
+            trigger.getParent().directHit.add(trigger.target);
         },
         mod: {
             targetInRange(card) {
@@ -192,56 +130,40 @@ const skills = {
         }
     },
     qianggong: {
-        group: ["qianggong_1", "qianggong_2"],
-        subSkill: {
-            1: {
-                enable: "chooseToUse",
-                filterCard(card, player) {
-                    return get.color(card) == "black";
-                },
-                viewAs: { name: "sha" },
-                viewAsFilter(player) {
-                    if (get.zhu(player, "shouyue")) {
-                        if (!player.countCards("hes")) {
-                            return false;
-                        }
-                    } else {
-                        if (!player.countCards("hes", { color: "black" })) {
-                            return false;
-                        }
-                    }
-                },
-                position: "hes",
-                prompt: "将一张黑色牌当杀使用",
-                check(card) {
-                    return 5 - get.value(card);
+        enable: "chooseToUse",
+        filterCard(card, player) {
+            return get.color(card) == "black";
+        },
+        viewAs: { name: "sha" },
+        viewAsFilter(player) {
+            if (get.zhu(player, "shouyue")) {
+                if (!player.countCards("hes")) {
+                    return false;
                 }
-            },
-            2: {
-                usable: 1,
+            } else {
+                if (!player.countCards("hes", { color: "black" })) {
+                    return false;
+                }
+            }
+        },
+        selectCard: [1, Infinity],
+        position: "hes",
+        prompt: "将任意张黑色牌当结算等量次的杀使用",
+        check(card) {
+            return 5 - get.value(card);
+        },
+        group: "qianggong_extra",
+        subSkill: {
+            extra: {
                 trigger: {
-                    player: "useCardToPlayered"
+                    player: "useCard"
                 },
-                filter(event, player) {
-                    return event.card.name == "sha";
+                forced: true,
+                filter(event) {
+                    return event.skill == "qianggong" && event.cards && event.cards.length > 1;
                 },
-                logTarget: "target",
-                content(event, trigger, player) {
-                    "step 0";
-                    player.judge(function(card) {
-                        const suit = get.suit(card);
-                        if (suit == "club") {
-                            trigger.getParent().baseDamage++;
-                        } else if (suit == "spade") {
-                            trigger.target.turnOver();
-                        } else if (suit == "heart") {
-                            trigger.getParent().baseDamage += Math.floor(trigger.target.maxHp / 2);
-                        } else {
-                            player.discardPlayerCard("he", trigger.target, true);
-                        }
-                    });
-                    "step 1";
-                    game.delayx();
+                content() {
+                    trigger.effectCount = trigger.cards.length;
                 }
             }
         }
@@ -252,7 +174,6 @@ const skills = {
         marktext: "☯",
         zhuanhuanji: true,
         forced: true,
-        frequent: true,
         intro: {
             content(storage, player, skill) {
                 return `回合开始时，你选择一项：1.${storage ? "回复一点体力" : "失去一点体力"}；2.${storage ? "摸两张牌" : "弃置两张牌"}。`;
@@ -759,52 +680,59 @@ const skills = {
         }
     },
     tongxin: {
-        enable: "phaseUse",
-        filter(event, player) {
-            return player.countCards("h") > 0;
-        },
-        filterTarget(card, player, target) {
-            return player != target && target.hasCard();
-        },
-        async content(event, trigger, player) {
-            const result = await event.target.chooseCard("h", "展示一张手牌", true).forResult();
+        global: "tongxin_global",
+        subSkill: {
+            global: {
+                enable: "phaseUse",
+                filter(event, player) {
+                    if (player != _status.currentPhase) {
+						return false;
+					}
+					if (!player.countCards("h") || player.hasSkill("tongxin_used")) {
+						return false;
+					}
+                    if (player.hasSkill("tongxin") && game.countPlayer(current => current.hasSkill("tongxin")) == 1) {
+                        return false;
+                    }
+					return game.hasPlayer(current => current.hasSkill("tongxin"));
+                },
+                filterTarget(card, player, target) {
+					return target.hasSkill("tongxin");
+				},
+				selectTarget() {
+					if (game.countPlayer(current => current.hasSkill("tongxin")) > 1) {
+						return 1;
+					}
+					return -1;
+				},
+                prompt() {
+					const player = get.player(),
+						targets = game.filterPlayer(current => {
+							return current.hasSkill("tongxin");
+						});
+					let list = get.translation(targets);
+					if (targets.length > 1) {
+						list += "中的一人";
+					}
+					return `交给${list}一张牌并选择选项执行效果`;
+				},
+                prepare(cards, player, targets) {
+					targets[0].logSkill("tongxin", [player]);
+				},
+                async content(event, trigger, player) {
+                    const target = event.target;
+                    player.addTempSkill("tongxin_used", "phaseUseAfter");
 
-            if (result?.bool && result?.cards?.length) {
-                const { cards } = result;
-                await event.target.showCards(cards);
-                const [card] = cards;
-                for (let i = 0; i < 3; i++) {
-                    await player.gain(get.discardPile(true));
+                    const give = player.chooseCard("h", "交给目标一张手牌", true).forResult();
+                    await player.give(give, target, false);
+
+                    const result = await player.chooseControl("类型", "牌名", "颜色", "花色", "点数").forResult();
+                    if (result.control == "类型") {
+                        player
+                    }
                 }
-
-                const give = await player.chooseCard("h", "交给目标一张手牌", true).forResult();
-                const count = 
-                    Number(get.type(card) == get.type(give.cards[0])) 
-                    + Number(get.name(card) == get.name(give.cards[0])) 
-                    + Number(get.number(card) == get.number(give.cards[0])) 
-                    + Number(get.suit(card) == get.suit(give.cards[0]));
-                await player.give(give.cards, event.target);
-
-                if (count == 0) {
-                    player.chooseToDiscard(true, "h", player.countCards("h"));
-                    player.tempBanSkill("tongxin");
-                } else if (count == 1) {
-                    player.draw();
-                    player.tempBanSkill("tongxin");
-                } else if (count == 2) {
-                    player.draw(2);
-                    player.tempBanSkill("tongxin");
-                } else if (count == 3) {
-                    player.draw(3);
-                } else {
-                    player.draw(4);
-                    player.removeSkill("tongxin");
-                    player.addSkill("tongxin_edit");
-                }
-
-                const give2 = await player.chooseCard("h", "交给目标一张手牌").forResult();
-                await player.give(give2.cards, event.target);
-            }
+            },
+            used: { charlotte: true }
         }
     },
     tongxin_edit: {

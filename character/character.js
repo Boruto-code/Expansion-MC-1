@@ -6,13 +6,13 @@ const characters = {
         sex: "none",
         group: "qun",
         hp: 4,
-        skills: ["fenlie", "ronghe", "liexi", "weigong"]
+        skills: ["fenlie", "weigong"]
     },
     skeleton: {
         sex: "male",
         group: "wang",
         hp: 4,
-        skills: ["jinggong", "qianggong"]
+        skills: ["feishi", "qianggong"]
     },
     zombie: {
         sex: "male",
