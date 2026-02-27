@@ -237,7 +237,6 @@ const skills = {
     },
     bianzhong: {
         forced: true,
-        frequent: true,
         trigger: {
             global: "gameStart"
         },
@@ -245,7 +244,7 @@ const skills = {
             player.judge(function(card) {
                 const suit = get.suit(card);
                 if (suit == "club") {
-                    player.addSkills(["zhibao", "jinxi"]);
+                    player.addSkills(["zhibao", "jinxi", "mcaozhan"]);
                 } else if (suit == "spade") {
                     player.addSkills(["tongdi", "jinghua"]);
                     player.changeSkin("bianzhong", "zombie_villager");
@@ -263,7 +262,6 @@ const skills = {
     },
     zhibao: {
         forced: true,
-        frequent: true,
         trigger: {
             target: "useCardToBefore"
         },
@@ -306,7 +304,7 @@ const skills = {
             }
         }
     },
-    aozhan: {
+    mcaozhan: {
         enable: "phaseUse",
         filterTarget(card, player, target) {
             return player.canCompare(target);
@@ -315,7 +313,27 @@ const skills = {
             return player.countCards("h") > 0;
         },
         async content(event, trigger, player) {
-            
+            await player.addSkill("mcaozhan_compare");
+            await player.chooseToCompare(event.target);
+        },
+        subSkill: {
+            compare: {
+                trigger: {
+                    player: "chooseToCompareAfter"
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const winner = trigger.result.winner;
+                    const card1 = trigger["card1"], card2 = trigger["card2"];
+                    if (winner?.isIn()) {
+                        await winner.gain(winner == player ? card1 : card2);
+                    } else {
+                        await player.gain(card2);
+                        await trigger.target.gain(card1);
+                    }
+                    await player.removeSkill("mcaozhan_compare");
+                }
+            }
         }
     },
     tongdi: {
@@ -346,9 +364,9 @@ const skills = {
         async content(event, trigger, player) {
             await player.loseMaxHp();
             await player.recoverTo(player.maxHp);
-            await player.removeSkill("riye");
-            await player.changeGroup("qun");
+            await player.removeSkills(["riye", "tongdi"]);
             await player.addSkill("tongdi_upgrade");
+            await player.changeGroup("qun");
         },
         ai: {
             maixie: true
@@ -356,17 +374,16 @@ const skills = {
     },
     tongdi_upgrade: {
         trigger: {
-            source: "damageEnd",
             player: "damageEnd"
         },
         content(event, trigger, player) {
             "step 0";
-            player.draw(3);
+            player.draw(2);
             "step 1";
-            player.chooseTarget([1, 3], false, `请选择至多三名角色`);
+            player.chooseTarget([1, 2], false, `请选择至多两名角色`);
             "step 2";
             for (let target of result.targets) {
-                target.draw(3);
+                target.draw(2);
             }
         }
     },
@@ -375,7 +392,6 @@ const skills = {
         subSkill: {
             1: {
                 forced: true,
-                frequent: true,
                 trigger: {
                     player: "damageBegin2"
                 },
@@ -391,7 +407,6 @@ const skills = {
             },
             2: {
                 forced: true,
-                frequent: true,
                 trigger: {
                     source: "damageBegin2"
                 },
@@ -409,42 +424,6 @@ const skills = {
         }
     },
     jianji: {
-        unique: true,
-        limited: true,
-        trigger: {
-            player: "phaseZhunbeiBegin"
-        },
-        derivation: "mcyuanji",
-        init(player) {
-            player.storage.jianji = false;
-        },
-        filter(event, player) {
-            return !player.storage.jianji;
-        },
-        content(event, player) {
-            "step 0";
-            player.awakenSkill("jianji");
-            "step 1";
-            player.judge(function(card) {
-                if (get.color(card) == "red") {
-                    player.addSkill("mcyuanji");
-                    player.disableEquip(1);
-                }
-            })
-        }
-    },
-    mcyuanji: {
-        forced: true,
-        frequent: true,
-        trigger: {
-            source: "damageBegin1"
-        },
-        filter(event, player) {
-            return get.name(event.card) == "sha" && get.nature(event.card) == "thunder";
-        },
-        content(event, trigger, player) {
-            trigger.num++;
-        },
         mod: {
             targetInRange(card) {
                 if (card.name == "sha") {
@@ -455,55 +434,31 @@ const skills = {
                 if (get.name(card) == "sha") {
                     return "thunder";
                 }
-            }
+            },
+            globalFrom(from, to, distance) {
+				return distance - 2;
+			}
         }
     },
     riye_edit: {
-        mark: true,
-        marktext: "☯",
-        zhuanhuanji: true,
         forced: true,
-        intro: {
-            content(storage, player, skill) {
-                return `回合开始时，你选择一项：1.回复一点体力；2.${storage ? "摸两张牌" : "摸一张牌"}。`;
-            }
-        },
         trigger: {
             player: "phaseBegin"
         },
         async content(event, trigger, player) {
-            player.changeZhuanhuanji("riye_edit");
+            const result = 
+                await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
+                    if (player.hp == player.maxHp) {
+                        return "摸两张牌";
+                    } else {
+                        return "回复一点体力";
+                    }
+                }).set("prompt", "回复一点体力或摸两张牌").forResult();
 
-            if (player.storage.riye_edit) {
-                const result = 
-                    await player.chooseControl("回复一点体力", "摸一张牌", function(event, player) {
-                        if (player.hp > 2) {
-                            return "回复一点体力";
-                        } else {
-                            return "摸一张牌";
-                        }
-                    }).set("prompt", "日：回复一点体力或摸一张牌").forResult();
-
-                if (result.control == "回复一点体力") {
-                    player.recover();
-                } else {
-                    player.draw();
-                }
+            if (result.control == "回复一点体力") {
+                player.recover();
             } else {
-                const result = 
-                    await player.chooseControl("回复一点体力", "摸两张牌", function(event, player) {
-                        if (player.hp == player.maxHp) {
-                            return "摸两张牌";
-                        } else {
-                            return "回复一点体力";
-                        }
-                    }).set("prompt", "夜：回复一点体力或摸两张牌").forResult();
-
-                if (result.control == "回复一点体力") {
-                    player.recover();
-                } else {
-                    player.draw(2);
-                }
+                player.draw(2);
             }
         }
     },
