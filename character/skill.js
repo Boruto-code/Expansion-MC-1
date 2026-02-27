@@ -273,35 +273,15 @@ const skills = {
         }
     },
     jinxi: {
-        group: ["jinxi_1", "jinxi_2"],
-        subSkill: {
-            1: {
-                trigger: {
-                    global: "damageBegin4"
-                },
-                forced: true,
-                frequent: true,
-                filter(event, player) {
-                    return get.distance(player, event.player) > 1 && event.source != player;
-                },
-                logTarget: "player",
-                content(event, trigger, player) {
-                    trigger.cancel();
-                }
-            },
-            2: {
-                trigger: {
-                    global: "damageBegin1"
-                },
-                forced: true,
-                frequent: true,
-                filter(event, player) {
-                    return event.player !== player && get.distance(event.player, player) <= 1;
-                },
-                content(event, trigger, player) {
-                    trigger.num++;
-                }
-            }
+        trigger: {
+            source: "damageBegin1"
+        },
+        forced: true,
+        filter(event, player) {
+            return event.player != player && get.distance(event.player, player) <= 1;
+        },
+        async content(event, trigger, player) {
+            trigger.num++;
         }
     },
     mcaozhan: {
@@ -476,7 +456,7 @@ const skills = {
             "step 0";
             trigger.player.addMark("poison");
             "step 1";
-            trigger.player.addAdditionalSkill("poison");
+            trigger.player.addSkill("poison");
             "step 2";
             player.discardPlayerCard("he", trigger.player, true);
         }
