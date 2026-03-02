@@ -1179,68 +1179,75 @@ const skills = {
         }
     },
     huixiang: {
-        usable: 1,
-        enable: "phaseUse",
-        async content(event, trigger, player) {
-            const players = game.filterPlayer(function(current) {
-                return current.countCards("h") > 0;
-            });
-            let numbers = [];
-            let maxs = 0, max = 0, min = 14;
-            let maxplayer, minplayers = [];
-                
-            for (let target of players) {
-                const result = await target
-                    .chooseToDiscard(1, true)
-                    .set("ai", function(card) {
-                        return get.number(card) + (10 - get.value(card)) * 0.2;
-                    })
-                    .forResult();
-                numbers.push(get.number(result.cards));
-                if (get.number(result.cards) == max || maxs == 0) {
-                    maxs++;
-                }
-                if (get.number(result.cards) > max) {
-                    max = get.number(result.cards);
-                    maxplayer = target;
-                }
-                if (get.number(result.cards) < min) {
-                    min = get.number(result.cards);
-                }
-            }
+        group: ["huixiang_1", "huixiang_2"],
+        subSkill: {
+            1: {
+                usable: 1,
+                enable: "phaseUse",
+                async content(event, trigger, player) {
+                    const players = game.filterPlayer(function(current) {
+                        return player.canCompare(current);
+                    });
+                    const result = await player
+                        .chooseToCompare(players, card => get.number(card))
+                        .setContent("chooseToCompareMeanwhile");
 
-            if (maxs == 1) {
-                for (let target of players) {
-                    if (target != maxplayer) {
-                        await target.damage(maxplayer);
+                    const { num2, winner } = await result.forResult();
+                    const { targets, num1 } = result;
+                    let smallPlayers = [], largePlayers = [], 
+                        comparePlayers = [player, ...targets], 
+                        nums = [num1, ...num2];
+                    for (let i = 0; i < nums.length; i++) {
+                        const num = nums[i];
+                        if (num <= 7) {
+                            smallPlayers.push(comparePlayers[i]);
+                        } else {
+                            largePlayers.push(comparePlayers[i]);
+                        }
                     }
-                }
 
-                const result = await player
-                    .chooseTarget(1, false, "选择一名没赢的其他角色赋予黑暗", (card, player, target) => {
-                        return target != player && target != maxplayer && players.indexOf(target) != -1;
-                    })
-                    .forResult();
-
-                if (result.bool) {
-                    await result.targets[0].addTempSkill("heian", { player: "phaseEnd" });
-                }
-            } else {
-                for (let i = 0; i < players.length; i++) {
-                    if (numbers[i] > min) {
-                        await players[i].chooseToDiscard(2, true);
+                    if (winner == player) {
+                        const { control } = await player
+                            .chooseControl("对所有拼点牌点数不大于7的角色造成一点伤害", "令所有拼点牌点数大于7的角色弃置两张牌")
+                            .forResult();
+                        
+                        if (control == "对所有拼点牌点数不大于7的角色造成一点伤害") {
+                            for (let target of smallPlayers) {
+                                target.damage(1);
+                                target.addTempSkill("heian", { player: "phaseEnd" });
+                            }
+                        } else {
+                            for (let target of smallPlayers) {
+                                target.chooseToDiscard(2, true);
+                            }
+                        }
                     }
-                }
-            }
-        },
-        ai: {
-            damage: true,
-            result: {
-                target(player, target) {
-                    return get.damageEffect(target, player);
+                },
+                ai: {
+                    damage: true,
+                    result: {
+                        target(player, target) {
+                            return get.damageEffect(target, player);
+                        }
+                    },
+                    threaten: 1.6
                 }
             },
-            threaten: 1.6
+            2: {
+                trigger: {
+                    player: "compare",
+                    target: "compare"
+                },
+                silent: true,
+                async content(event, trigger, player) {
+					game.log(player, "拼点牌点数视为", "#yK");
+					if (player == trigger.player) {
+						trigger.num1 = 13;
+					} else {
+						trigger.num2 = 13;
+					}
+				}
+            }
         }
     },
     heian: {
