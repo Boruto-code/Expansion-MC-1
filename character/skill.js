@@ -1217,7 +1217,7 @@ const skills = {
                                 target.addTempSkill("heian", { player: "phaseEnd" });
                             }
                         } else {
-                            for (let target of smallPlayers) {
+                            for (let target of largePlayers) {
                                 target.chooseToDiscard(2, true);
                             }
                         }
