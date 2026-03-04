@@ -64,6 +64,12 @@ const characters = {
         hp: 4,
         skills: ["zhimo", "niangzao", "zhiyao"],
         doubleGroup: ["qun", "lve"]
+    },
+    phantom: {
+        sex: "none",
+        group: "qun",
+        hp: 4,
+        skills: ["xiangkong", "yexi"]
     }
 };
 

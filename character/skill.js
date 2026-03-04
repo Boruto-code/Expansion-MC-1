@@ -1184,6 +1184,9 @@ const skills = {
             1: {
                 usable: 1,
                 enable: "phaseUse",
+                filter(event, player) {
+                    return player.countCards("h") > 0;
+                },
                 async content(event, trigger, player) {
                     const players = game.filterPlayer(function(current) {
                         return player.canCompare(current);
@@ -1471,6 +1474,47 @@ const skills = {
                 },
                 content(event, trigger, player) {
                     player.changeGroup("qun");
+                }
+            }
+        }
+    },
+    
+    xiangkong: {
+        trigger: {
+            player: "useCard"
+        },
+        intro: {
+            content: "已记录花色：$"
+        },
+        filter(event, player) {
+            return lib.suit.includes(get.suit(event.card));
+        },
+        async content(event, trigger, player) {
+            const suit = get.suit(trigger.card);
+            if (player.storage.xiangkong?.includes(suit)) {
+                await player.unmarkAuto("xiangkong", [suit]);
+                trigger.targets.length = 0;
+                trigger.all_excluded = true;
+                await player.draw(2);
+            } else {
+                await player.markAuto("xiangkong", [suit]);
+                player.storage.xiangkong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+            }
+        }
+    },
+    yexi: {
+        usable: 1,
+        enable: "phaseUse",
+        filter(event, player) {
+            if (player.storage.xiangkong != null)
+                return player.storage.xiangkong.length < 4;
+            return true;
+        },
+        async content(event, trigger, player) {
+            event.list = lib.suit.slice();
+            if (player.storage.xiangkong != null) {
+                for (let i of player.storage.xiangkong) {
+                    event.list.remove(i);
                 }
             }
         }
