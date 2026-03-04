@@ -1517,6 +1517,9 @@ const skills = {
                     event.list.remove(i);
                 }
             }
+
+            const { control } = await player.chooseControl(event.list).forResult();
+            await player.markAuto("xiangkong", [control]);
         }
     }
 };
