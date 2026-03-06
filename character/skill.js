@@ -1493,12 +1493,39 @@ const skills = {
             const suit = get.suit(trigger.card);
             if (player.storage.xiangkong?.includes(suit)) {
                 await player.unmarkAuto("xiangkong", [suit]);
-                trigger.targets.length = 0;
-                trigger.all_excluded = true;
-                await player.draw(2);
+
+                const { control } = await player.chooseControl("令此牌无效并摸两张牌", "令下一张牌无次数限制").forResult();
+                if (control == "令此牌无效并摸两张牌") {
+                    trigger.targets.length = 0;
+                    trigger.all_excluded = true;
+                    await player.draw(2);
+                } else {
+                    await player.addSkill("xiangkong_unlimit");
+                }
             } else {
                 await player.markAuto("xiangkong", [suit]);
                 player.storage.xiangkong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+            }
+        },
+        subSkill: {
+            unlimit: {
+                charlotte: true,
+                mod: {
+                    cardUsable: () => Infinity
+                },
+                trigger: {
+                    player: "useCard1",
+                },
+                forced: true,
+                popup: false,
+                firstDo: true,
+                async content(event, trigger, player) {
+                    player.removeSkill(event.name);
+                },
+                mark: true,
+                intro: {
+                    content: "使用的下一张牌无任何次数限制",
+                }
             }
         }
     },
