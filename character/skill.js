@@ -1494,7 +1494,7 @@ const skills = {
             if (player.storage.xiangkong?.includes(suit)) {
                 await player.unmarkAuto("xiangkong", [suit]);
 
-                const { control } = await player.chooseControl("令此牌无效并摸两张牌", "令下一张牌无次数限制").forResult();
+                const { control } = await player.chooseControl("令此牌无效并摸两张牌", "令下一张牌无距离次数限制").forResult();
                 if (control == "令此牌无效并摸两张牌") {
                     trigger.targets.length = 0;
                     trigger.all_excluded = true;
@@ -1511,7 +1511,8 @@ const skills = {
             unlimit: {
                 charlotte: true,
                 mod: {
-                    cardUsable: () => Infinity
+                    cardUsable: () => Infinity,
+                    targetInRange: () => true
                 },
                 trigger: {
                     player: "useCard1",
@@ -1524,7 +1525,7 @@ const skills = {
                 },
                 mark: true,
                 intro: {
-                    content: "使用的下一张牌无任何次数限制",
+                    content: "使用的下一张牌无距离次数限制",
                 }
             }
         }
