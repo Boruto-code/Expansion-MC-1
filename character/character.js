@@ -12,7 +12,7 @@ const characters = {
         sex: "male",
         group: "wang",
         hp: 4,
-        skills: ["feishi", "qianggong"]
+        skills: ["feishi", "qianggong", "zhijian"]
     },
     zombie: {
         sex: "male",

@@ -168,6 +168,15 @@ const skills = {
             }
         }
     },
+    zhijian: {
+        trigger: {
+            player: "phaseZhunbeiBegin"
+        },
+        async content(event, trigger, player) {
+            await player.gain(get.discardPile(card => get.color(card) == "black"));
+            await player.gain(get.discardPile(card => get.color(card) == "black"));
+        }
+    },
 
     riye: {
         mark: true,
