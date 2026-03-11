@@ -269,6 +269,19 @@ const skills = {
             });
         }
     },
+    zhaohuan: {
+        zhuSkill: true,
+        usable(skill, player) {
+            return game.countPlayer(current => {
+                return current.group == "wang";
+            });
+        },
+        enable: "phaseUse",
+        async content(event, trigger, player) {
+            await player.useCard({ name: "nanman", isCard: true }, 
+                game.filterPlayer(current => current != player));
+        }
+    },
     zhibao: {
         forced: true,
         trigger: {
@@ -1373,8 +1386,8 @@ const skills = {
         enable: "phaseUse",
         prompt: "选择一名其他角色",
         filterTarget: lib.filter.notMe,
-        content(event, trigger, player) {
-            player.gainPlayerCard(target, true, "he", target.countCards("he"));
+        async content(event, trigger, player) {
+            await player.gainPlayerCard(target, true, "he", target.countCards("he"));
         }
     },
 
