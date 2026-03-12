@@ -277,6 +277,9 @@ const skills = {
             });
         },
         enable: "phaseUse",
+        filter(event, player) {
+            return player.hasZhuSkill("jielve");
+        },
         async content(event, trigger, player) {
             await player.useCard({ name: "nanman", isCard: true }, 
                 game.filterPlayer(current => current != player));
