@@ -331,7 +331,7 @@ const skills = {
                     const winner = trigger.result.winner;
                     const card1 = trigger["card1"], card2 = trigger["card2"];
                     if (winner?.isIn()) {
-                        await winner.gain(winner == player ? card1 : card2);
+                        await winner.gain(winner == player ? card2 : card1);
                     } else {
                         await player.gain(card2);
                         await trigger.target.gain(card1);
