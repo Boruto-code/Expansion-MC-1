@@ -108,6 +108,17 @@ const skills = {
 			}
         }
     },
+    liexi: {
+        enable: "phaseUse",
+        prompt: "将所有手牌当作【杀】使用",
+        filter(event, player) {
+            return player.getCards("h").length;
+        },
+        viewAs: { name: "sha" },
+        filterCard: true,
+        position: "h",
+        selectCard: -1
+    },
 
     feishi: {
         trigger: {
@@ -1513,6 +1524,13 @@ const skills = {
         },
         filter(event, player) {
             return lib.suit.includes(get.suit(event.card));
+        },
+        prompt(links, player) {
+            if (player.storage.xiangkong?.includes(get.suit(trigger.card))) {
+                return "是否发动【翔空】，记录此牌花色？";
+            } else {
+                return "是否发动【翔空】，令此牌无效并摸两张牌或令下一张牌无距离次数限制？";
+            }
         },
         async content(event, trigger, player) {
             const suit = get.suit(trigger.card);

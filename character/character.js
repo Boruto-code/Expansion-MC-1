@@ -6,7 +6,7 @@ const characters = {
         sex: "none",
         group: "qun",
         hp: 4,
-        skills: ["fenlie", "weigong"]
+        skills: ["fenlie", "weigong", "liexi"]
     },
     skeleton: {
         sex: "male",
