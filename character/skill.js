@@ -1401,7 +1401,7 @@ const skills = {
         prompt: "选择一名其他角色",
         filterTarget: lib.filter.notMe,
         async content(event, trigger, player) {
-            await player.gainPlayerCard(target, true, "he", target.countCards("he"));
+            await player.gainPlayerCard(event.target, true, "he", event.target.countCards("he"));
         }
     },
 
