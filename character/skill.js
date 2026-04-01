@@ -161,7 +161,7 @@ const skills = {
         position: "hes",
         prompt: "将任意张黑色牌当结算等量次的杀使用",
         check(card) {
-            return 5 - get.value(card);
+            return 10 - get.value(card);
         },
         group: "qianggong_extra",
         subSkill: {
@@ -186,6 +186,16 @@ const skills = {
         async content(event, trigger, player) {
             await player.gain(get.discardPile(card => get.color(card) == "black"));
             await player.gain(get.discardPile(card => get.color(card) == "black"));
+        },
+        ai: {
+            threaten: 1.7,
+            order: 8,
+            result: {
+                player: 3
+            },
+            tag: {
+                gain: 1
+            }
         }
     },
 
@@ -1524,13 +1534,6 @@ const skills = {
         },
         filter(event, player) {
             return lib.suit.includes(get.suit(event.card));
-        },
-        prompt(links, player) {
-            if (player.storage.xiangkong?.includes(get.suit(trigger.card))) {
-                return "是否发动【翔空】，记录此牌花色？";
-            } else {
-                return "是否发动【翔空】，令此牌无效并摸两张牌或令下一张牌无距离次数限制？";
-            }
         },
         async content(event, trigger, player) {
             const suit = get.suit(trigger.card);
