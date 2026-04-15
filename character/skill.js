@@ -80,6 +80,16 @@ const skills = {
             player.addMark("fenlie", 1);
             player.draw(player.countMark("fenlie") - player.countCards("h"));
         },
+        mod: {
+            selectTarget(card, player, range) {
+                if (card.name == "sha" && player.countMark("fenlie") > 0) {
+                    range[1] += player.countMark("fenlie");
+                }
+            },
+            globalFrom(from, to, distance) {
+                return distance - from.countMark("fenlie");
+            }
+        },
         marktext: "裂",
         intro: {
             content: "当前有#个标记"
