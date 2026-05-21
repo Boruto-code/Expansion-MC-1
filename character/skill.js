@@ -725,8 +725,8 @@ const skills = {
 
                     const result = await player.chooseControl("类型", "牌名", "颜色", "花色", "点数").forResult();
                     if (result.control == "类型") {
-                        await player.gain(get.discardPile(card => get.type(card) == get.type(give)), "gain2");
-                        await target.gain(get.discardPile(card => get.type(card) == get.type(give)), "gain2");
+                        await player.gain(get.discardPile(card => get.type2(card) == get.type2(give)), "gain2");
+                        await target.gain(get.discardPile(card => get.type2(card) == get.type2(give)), "gain2");
                     } else if (result.control == "牌名") {
                         await player.gain(get.discardPile(card => get.name(card) == get.name(give)), "gain2");
                         await target.gain(get.discardPile(card => get.name(card) == get.name(give)), "gain2");
@@ -1128,6 +1128,19 @@ const skills = {
                 async content(event, trigger, player) {
                     await trigger.player.turnOver();
                 }
+            }
+        }
+    },
+    rushi: {
+        trigger: {
+            player: "phaseZhunbeiBegin"
+        },
+        async content(event, trigger, player) {
+            let card = get.discardPile(function (card) {
+                return get.type2(card) == "trick";
+            });
+            if (card) {
+                player.gain(card, "draw");
             }
         }
     },

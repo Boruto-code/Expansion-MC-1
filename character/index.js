@@ -5,6 +5,7 @@ import skills from "./skill.js";
 import translates from "./translate.js";
 import characterIntros from "./intro.js";
 import characterFilters from "./characterFilter.js";
+import dynamicTranslates from "./dynamicTranslate.js";
 import { characterSort, characterSortTranslate } from "./sort.js";
 
 game.import("character", function() {
@@ -14,6 +15,7 @@ game.import("character", function() {
         character: { ...characters },
         characterSort: { mc1: characterSort },
         characterFilter: { ...characterFilters },
+        dynamicTranslate: { ...dynamicTranslates },
         characterIntro: { ...characterIntros },
         skill: { ...skills },
         translate: { ...translates, ...characterSortTranslate },
