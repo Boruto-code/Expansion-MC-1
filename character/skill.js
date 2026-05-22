@@ -80,16 +80,6 @@ const skills = {
             player.addMark("fenlie", 1);
             player.draw(player.countMark("fenlie") - player.countCards("h"));
         },
-        mod: {
-            selectTarget(card, player, range) {
-                if (card.name == "sha" && player.countMark("fenlie") > 0) {
-                    range[1] += player.countMark("fenlie");
-                }
-            },
-            globalFrom(from, to, distance) {
-                return distance - from.countMark("fenlie");
-            }
-        },
         marktext: "裂",
         intro: {
             content: "当前有#个标记"
@@ -625,6 +615,15 @@ const skills = {
                     target.addMark("poison");
                     "step 2";
                     target.addSkill("poison");
+                },
+                ai: {
+                    threaten: 1.8,
+                    order: 8,
+                    result: {
+                        target(player, target) {
+                            return -2;
+                        }
+                    }
                 }
             },
             2: {
@@ -641,6 +640,15 @@ const skills = {
                 content() {
                     trigger.player.addMark("poison", 2);
                     trigger.player.addSkill("poison");
+                },
+                ai: {
+                    threaten: 1.7,
+                    order: 10,
+                    result: {
+                        target(player, target) {
+                            return -2;
+                        }
+                    }
                 }
             }
         }
@@ -648,13 +656,15 @@ const skills = {
     qiantao: {
         usable: 1,
         forced: true,
-        frequent: true,
         popup: false,
         trigger: {
             player: "damageBegin4"
         },
         logTarget: "player",
         filter(event, player) {
+            if (!event.source) {
+                return false;
+            }
             return event.source.hasMark("poison") && !event.player.hasSkill("qiantao_used");
         },
         content(event, trigger, player) {
